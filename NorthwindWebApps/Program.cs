@@ -2,6 +2,8 @@ using Northwind.Services;
 using Microsoft.EntityFrameworkCore;
 using Northwind.Services.EntityFrameworkCore;
 using System.Data.SqlClient;
+using System;
+using System.Configuration;
 using Northwind.DataAccess;
 using Northwind.Services.DataAccess;
 using Northwind.DataAccess.SqlServer;
@@ -15,7 +17,8 @@ builder.Services.AddDbContext<NorthwindContext>(opt =>
     opt.UseInMemoryDatabase("NorthwindList"));
 builder.Services.AddScoped(service =>
 {
-    var sqlConnection = new SqlConnection(@"Data Source=(localdb)\MSSQLLocalDB;Initial Catalog=Northwind;Integrated Security=True;Connect Timeout=30;Encrypt=False;TrustServerCertificate=False;ApplicationIntent=ReadWrite;MultiSubnetFailover=False");
+    var connectToDbString = builder.Configuration.GetConnectionString("DefaultConnection");
+    var sqlConnection = new SqlConnection(connectToDbString);
     sqlConnection.Open();
     return sqlConnection;
 });
