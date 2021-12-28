@@ -1,5 +1,8 @@
 ﻿namespace Northwind.Services
 {
+    /// <summary>
+    /// IProductCategoryPicturesService interface.
+    /// </summary>
     public interface IProductCategoryPicturesService
     {
         /// <summary>

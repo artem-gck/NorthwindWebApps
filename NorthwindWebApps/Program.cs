@@ -2,8 +2,6 @@ using Northwind.Services;
 using Microsoft.EntityFrameworkCore;
 using Northwind.Services.EntityFrameworkCore;
 using System.Data.SqlClient;
-using System;
-using System.Configuration;
 using Northwind.DataAccess;
 using Northwind.Services.DataAccess;
 using Northwind.DataAccess.SqlServer;

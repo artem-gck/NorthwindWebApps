@@ -1,12 +1,15 @@
-﻿using System.Diagnostics;
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
 
-namespace Northwind.DataAccess.Employees
+namespace Northwind.Services.Models
 {
     /// <summary>
-    /// Represents a TO for Northwind employees.
+    /// Employee class.
     /// </summary>
-    [DebuggerDisplay("Id={Id}, Name={Name}")]
-    public class EmployeeTransferObject
+    public class Employee
     {
         /// <summary>
         /// Gets or sets the identifier.

@@ -4,6 +4,9 @@ using Northwind.Services.Models;
 
 namespace Northwind.Services
 {
+    /// <summary>
+    /// IProductCategoryManagementService interface.
+    /// </summary>
     public interface IProductCategoryManagementService
     {
         /// <summary>
