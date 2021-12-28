@@ -15,14 +15,15 @@ namespace Northwind.Services.EntityFrameworkCore
         /// <inheritdoc/>
         public bool DestroyPicture(int categoryId)
         {
-            var picture = _context.Pictures.Find(categoryId);
+            var category = _context.Categories.Find(categoryId);
 
-            if (picture is null)
+            if (category is null)
             {
                 return false;
             }
 
-            _context.Pictures.Remove(picture);
+            category.Picture = null;
+            //_context.Categories.Remove(category);
             _context.SaveChanges();
 
             return true;
@@ -31,22 +32,24 @@ namespace Northwind.Services.EntityFrameworkCore
         /// <inheritdoc/>
         public bool TryShowPicture(int categoryId, out byte[] bytes)
         {
-            var picture = _context.Pictures.Find(categoryId);
+            var category = _context.Categories.Find(categoryId);
 
-            if (picture is null)
+            if (category is null)
             {
                 bytes = null;
                 return false;
             }
 
-            bytes = picture.Content;
+            bytes = category.Picture;
             return true;
         }
 
         /// <inheritdoc/>
         public bool UpdatePicture(int categoryId, Stream stream)
         {
-            if (_context.Categories.Find(categoryId) is null)
+            var category = _context.Categories.Find(categoryId);
+
+            if (category is null)
             {
                 return false;
             }
@@ -57,13 +60,8 @@ namespace Northwind.Services.EntityFrameworkCore
 
                 if (memoryStream.Length < 2097152)
                 {
-                    var file = new Picture()
-                    {
-                        CategoryId = categoryId,
-                        Content = memoryStream.ToArray()
-                    };
+                    category.Picture = memoryStream.ToArray();
 
-                    _context.Pictures.Add(file);
                     _context.SaveChanges();
                 }
                 else

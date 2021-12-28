@@ -1,4 +1,5 @@
 ﻿using Microsoft.AspNetCore.Mvc;
+using Northwind.DataAccess.Products;
 using Northwind.Services;
 using Northwind.Services.Models;
 
@@ -40,7 +41,7 @@ namespace NorthwindWebApps.Controllers
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         public ActionResult<IEnumerable<Product>> GetAll()
         {
-            var products = _service.ShowProducts(0, 10) as List<Product>;
+            var products = _service.ShowProducts(0, int.MaxValue) as List<Product>;
 
             if (products is null)
             {
@@ -53,14 +54,14 @@ namespace NorthwindWebApps.Controllers
         // GET api/products/2
         [HttpGet("{id}")]
         [ProducesResponseType(StatusCodes.Status200OK)]
-        [ProducesResponseType(StatusCodes.Status400BadRequest)]
+        [ProducesResponseType(StatusCodes.Status404NotFound)]
         public ActionResult<Product> Get(int id)
         {
             Product product;
 
             if (!_service.TryShowProduct(id, out product))
             {
-                return BadRequest();
+                return NotFound();
             }
 
             return product;
