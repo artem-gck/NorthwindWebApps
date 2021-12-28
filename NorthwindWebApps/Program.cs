@@ -4,6 +4,7 @@ using Northwind.Services.EntityFrameworkCore;
 using System.Data.SqlClient;
 using Northwind.DataAccess;
 using Northwind.Services.DataAccess;
+using Northwind.DataAccess.SqlServer;
 
 var builder = WebApplication.CreateBuilder(args);
 
