@@ -3,7 +3,7 @@
     /// <summary>
     /// IProductCategoryPicturesService interface.
     /// </summary>
-    public interface IProductCategoryPicturesService
+    public interface IProductCategoryPicturesManagementService
     {
         /// <summary>
         /// Try to show a product category picture.

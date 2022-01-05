@@ -22,7 +22,7 @@ namespace Northwind.DataAccess.SqlServer
         }
 
         /// <inheritdoc/>
-        public int InsertProduct(ProductTransferObject product)
+        public async Task<int> InsertProductAsync(ProductTransferObject product)
         {
             if (product == null)
             {
@@ -37,13 +37,13 @@ VALUES (@productName, @supplierId, @categoryId, @quantityPerUnit, @unitPrice, @u
             {
                 AddSqlParameters(product, command);
 
-                var id = command.ExecuteScalar();
+                var id = await command.ExecuteScalarAsync();
                 return (int)id;
             }
         }
 
         /// <inheritdoc/>
-        public bool DeleteProduct(int productId)
+        public async Task<bool> DeleteProductAsync(int productId)
         {
             if (productId <= 0)
             {
@@ -60,13 +60,13 @@ SELECT @@ROWCOUNT";
                 command.Parameters.Add(productIdParameter, SqlDbType.Int);
                 command.Parameters[productIdParameter].Value = productId;
 
-                var result = command.ExecuteScalar();
+                var result = await command.ExecuteScalarAsync();
                 return ((int)result) > 0;
             }
         }
 
         /// <inheritdoc/>
-        public ProductTransferObject FindProduct(int productId)
+        public async Task<ProductTransferObject> FindProductAsync(int productId)
         {
             if (productId <= 0)
             {
@@ -83,7 +83,7 @@ WHERE p.ProductID = @productId";
                 command.Parameters.Add(productIdParameter, SqlDbType.Int);
                 command.Parameters[productIdParameter].Value = productId;
 
-                using (var reader = command.ExecuteReader())
+                using (var reader = await command.ExecuteReaderAsync())
                 {
                     if (!reader.Read())
                     {
@@ -96,7 +96,7 @@ WHERE p.ProductID = @productId";
         }
 
         /// <inheritdoc />
-        public IList<ProductTransferObject> SelectProducts(int offset, int limit)
+        public async Task<IList<ProductTransferObject>> SelectProductsAsync(int offset, int limit)
         {
             if (offset < 0)
             {
@@ -115,11 +115,11 @@ OFFSET {0} ROWS
 FETCH FIRST {1} ROWS ONLY";
 
             string commandText = string.Format(CultureInfo.CurrentCulture, commandTemplate, offset, limit);
-            return this.ExecuteReader(commandText);
+            return await this.ExecuteReaderAsync(commandText);
         }
 
         /// <inheritdoc/>
-        public IList<ProductTransferObject> SelectProductsByName(ICollection<string> productNames)
+        public async Task<IList<ProductTransferObject>> SelectProductsByNameAsync(ICollection<string> productNames)
         {
             if (productNames == null)
             {
@@ -137,11 +137,11 @@ WHERE p.ProductName in ('{0}')
 ORDER BY p.ProductID";
 
             string commandText = string.Format(CultureInfo.CurrentCulture, commandTemplate, string.Join("', '", productNames));
-            return this.ExecuteReader(commandText);
+            return await this.ExecuteReaderAsync(commandText);
         }
 
         /// <inheritdoc/>
-        public bool UpdateProduct(ProductTransferObject product)
+        public async Task<bool> UpdateProductAsync(ProductTransferObject product)
         {
             if (product == null)
             {
@@ -162,13 +162,13 @@ SELECT @@ROWCOUNT";
                 command.Parameters.Add(productId, SqlDbType.Int);
                 command.Parameters[productId].Value = product.Id;
 
-                var result = command.ExecuteScalar();
+                var result = await command.ExecuteScalarAsync();
                 return ((int)result) > 0;
             }
         }
 
         /// <inheritdoc/>
-        public IList<ProductTransferObject> SelectProductByCategory(ICollection<int> collectionOfCategoryId)
+        public async Task<IList<ProductTransferObject>> SelectProductByCategoryAsync(ICollection<int> collectionOfCategoryId)
         {
             if (collectionOfCategoryId == null)
             {
@@ -189,9 +189,9 @@ WHERE p.CategoryID in ('{0}')";
 #pragma warning disable CA2100 // Review SQL queries for security vulnerabilities
             using (var command = new SqlCommand(commandText, this.connection))
 #pragma warning restore CA2100 // Review SQL queries for security vulnerabilities
-            using (var reader = command.ExecuteReader())
+            using (var reader = await command.ExecuteReaderAsync())
             {
-                while (reader.Read())
+                while (await reader.ReadAsync())
                 {
                     products.Add(CreateProduct(reader));
                 }
@@ -409,14 +409,14 @@ WHERE p.CategoryID in ('{0}')";
             command.Parameters[discontinuedParameter].Value = product.Discontinued;
         }
 
-        private IList<ProductTransferObject> ExecuteReader(string commandText)
+        private async Task<IList<ProductTransferObject>> ExecuteReaderAsync(string commandText)
         {
             var products = new List<ProductTransferObject>();
 
 #pragma warning disable CA2100 // Review SQL queries for security vulnerabilities
             using (var command = new SqlCommand(commandText, this.connection))
 #pragma warning restore CA2100 // Review SQL queries for security vulnerabilities
-            using (var reader = command.ExecuteReader())
+            using (var reader = await command.ExecuteReaderAsync())
             {
                 while (reader.Read())
                 {

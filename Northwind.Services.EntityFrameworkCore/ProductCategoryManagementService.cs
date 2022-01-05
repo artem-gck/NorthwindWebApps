@@ -20,7 +20,7 @@ namespace Northwind.Services.EntityFrameworkCore
         {
             _ = productCategory is null ? throw new ArgumentNullException($"{nameof(productCategory)} is null") : productCategory;
 
-            _context.Categories.Add(productCategory);
+            await _context.Categories.AddAsync(productCategory);
             await _context.SaveChangesAsync();
 
             return productCategory.Id;
@@ -29,7 +29,7 @@ namespace Northwind.Services.EntityFrameworkCore
         /// <inheritdoc/>
         public async Task<bool> DestroyCategoryAsync(int categoryId)
         {
-            var category = _context.Categories.Find(categoryId);
+            var category = await _context.Categories.FindAsync(categoryId);
 
             if (category is null)
             {

@@ -25,23 +25,23 @@ namespace NorthwindWebApps.Controllers
         [HttpPost]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
-        public IActionResult Create(Product product)
+        public async Task<IActionResult> CreateAsync(Product product)
         {
-            if (_service.CreateProduct(product) == -1)
+            if (await _service.CreateProductAsync(product) == -1)
             {
                 return BadRequest();
             }
 
-            return CreatedAtAction(nameof(Create), new { id = product.Id }, product);
+            return CreatedAtAction(nameof(CreateAsync), new { id = product.Id }, product);
         }
 
         // GET api/products
         [HttpGet]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
-        public ActionResult<IEnumerable<Product>> GetAll()
+        public async Task<ActionResult<IEnumerable<Product>>> GetAllAsync()
         {
-            var products = _service.ShowProducts(0, int.MaxValue) as List<Product>;
+            var products = await _service.ShowProductsAsync(0, int.MaxValue) as List<Product>;
 
             if (products is null)
             {
@@ -55,7 +55,7 @@ namespace NorthwindWebApps.Controllers
         [HttpGet("{id}")]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
-        public ActionResult<Product> Get(int id)
+        public async Task<ActionResult<Product>> GetAsync(int id)
         {
             Product product;
 
@@ -71,7 +71,7 @@ namespace NorthwindWebApps.Controllers
         [HttpPut("{id}")]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         [ProducesResponseType(StatusCodes.Status204NoContent)]
-        public IActionResult Update(int id, Product product)
+        public async Task<IActionResult> UpdateAsync(int id, Product product)
         {
             Product pro;
 
@@ -85,7 +85,7 @@ namespace NorthwindWebApps.Controllers
                 return BadRequest();
             }
 
-            _service.UpdateProduct(id, product);
+            await _service.UpdateProductAsync(id, product);
 
             return NoContent();
         }
@@ -94,7 +94,7 @@ namespace NorthwindWebApps.Controllers
         [HttpDelete("{id}")]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         [ProducesResponseType(StatusCodes.Status204NoContent)]
-        public IActionResult Delete(int id)
+        public async Task<IActionResult> DeleteAsync(int id)
         {
             Product pro;
 
@@ -103,7 +103,7 @@ namespace NorthwindWebApps.Controllers
                 return BadRequest();
             }
 
-            _service.DestroyProduct(id);
+            await _service.DestroyProductAsync(id);
 
             return NoContent();
         }

@@ -7,8 +7,8 @@ namespace Northwind.Services.DataAccess
     /// <summary>
     /// ProductCategoryPicturesManagementDataAccessService class.
     /// </summary>
-    /// <seealso cref="Northwind.Services.IProductCategoryPicturesService" />
-    public class ProductCategoryPicturesManagementDataAccessService : IProductCategoryPicturesService
+    /// <seealso cref="Northwind.Services.IProductCategoryPicturesManagementService" />
+    public class ProductCategoryPicturesManagementDataAccessService : IProductCategoryPicturesManagementService
     {
         private static NorthwindDataAccessFactory? _factory;
 

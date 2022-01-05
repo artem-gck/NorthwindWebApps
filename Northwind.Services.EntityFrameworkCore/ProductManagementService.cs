@@ -13,20 +13,20 @@ namespace Northwind.Services.EntityFrameworkCore
             => _context = context;
 
         /// <inheritdoc/>
-        public int CreateProduct(Product product)
+        public async Task<int> CreateProductAsync(Product product)
         {
             _ = product is null ? throw new ArgumentNullException($"{nameof(product)} is null") : product;
 
-            _context.Products.Add(product);
-            _context.SaveChanges();
+            await _context.Products.AddAsync(product);
+            await _context.SaveChangesAsync();
 
             return product.Id;
         }
 
         /// <inheritdoc/>
-        public bool DestroyProduct(int productId)
+        public async Task<bool> DestroyProductAsync(int productId)
         {
-            var product = _context.Products.Find(productId);
+            var product = await _context.Products.FindAsync(productId);
 
             if (product is null)
             {
@@ -34,29 +34,29 @@ namespace Northwind.Services.EntityFrameworkCore
             }
 
             _context.Products.Remove(product);
-            _context.SaveChanges();
+            await _context.SaveChangesAsync();
 
             return true;
         }
 
         /// <inheritdoc/>
-        public IList<ProductCategory> LookupCategoriesByName(IList<string> names)
+        public async Task<IList<ProductCategory>> LookupCategoriesByNameAsync(IList<string> names)
         {
             throw new NotImplementedException();
         }
 
         /// <inheritdoc/>
-        public IList<Product> LookupProductsByName(IList<string> names)
+        public async Task<IList<Product>> LookupProductsByNameAsync(IList<string> names)
         {
             throw new NotImplementedException();
         }
 
         /// <inheritdoc/>
-        public IList<Product> ShowProducts(int offset, int limit)
+        public async Task<IList<Product>> ShowProductsAsync(int offset, int limit)
             => limit != -1 ? _context.Products.Skip(offset).Take(limit).ToList() : _context.Products.Skip(offset).ToList();
 
         /// <inheritdoc/>
-        public IList<Product> ShowProductsForCategory(int categoryId)
+        public async Task<IList<Product>> ShowProductsForCategoryAsync(int categoryId)
         {
             throw new NotImplementedException();
         }
@@ -75,7 +75,7 @@ namespace Northwind.Services.EntityFrameworkCore
         }
 
         /// <inheritdoc/>
-        public bool UpdateProduct(int productId, Product product)
+        public async Task<bool> UpdateProductAsync(int productId, Product product)
         {
             var prod = _context.Products
                 .Where(prod => prod.Id == productId)
@@ -92,7 +92,7 @@ namespace Northwind.Services.EntityFrameworkCore
             prod.ReorderLevel = product.ReorderLevel;
 
 
-            _context.SaveChanges();
+            await _context.SaveChangesAsync();
 
             if (_context.Products.Contains(product))
             {

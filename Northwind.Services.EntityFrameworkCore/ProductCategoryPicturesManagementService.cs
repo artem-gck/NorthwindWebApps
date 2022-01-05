@@ -5,7 +5,7 @@ using Northwind.Services.Models;
 namespace Northwind.Services.EntityFrameworkCore
 {
     /// <inheritdoc/>
-    public class ProductCategoryPicturesManagementService : IProductCategoryPicturesService
+    public class ProductCategoryPicturesManagementService : IProductCategoryPicturesManagementService
     {
         private static NorthwindContext? _context;
 
@@ -23,7 +23,6 @@ namespace Northwind.Services.EntityFrameworkCore
             }
 
             category.Picture = null;
-            //_context.Categories.Remove(category);
             await _context.SaveChangesAsync();
 
             return true;

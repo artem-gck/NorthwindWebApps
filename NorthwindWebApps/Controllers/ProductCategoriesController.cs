@@ -13,7 +13,7 @@ namespace NorthwindWebApps.Controllers
         /// <summary>
         /// The picture service.
         /// </summary>
-        private IProductCategoryPicturesService _pictureService;
+        private IProductCategoryPicturesManagementService _pictureService;
 
         /// <summary>
         /// The category service.
@@ -25,7 +25,7 @@ namespace NorthwindWebApps.Controllers
         /// </summary>
         /// <param name="pictureService">The picture service.</param>
         /// <param name="categoryService">The category service.</param>
-        public ProductCategoriesController(IProductCategoryPicturesService pictureService, IProductCategoryManagementService categoryService)
+        public ProductCategoriesController(IProductCategoryPicturesManagementService pictureService, IProductCategoryManagementService categoryService)
             => (_pictureService, _categoryService) = (pictureService, categoryService);
 
         // POST api/categories

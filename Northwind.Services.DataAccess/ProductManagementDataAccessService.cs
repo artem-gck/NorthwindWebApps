@@ -20,7 +20,7 @@ namespace Northwind.Services.DataAccess
             => _factory = factory;
 
         /// <inheritdoc/>
-        public int CreateProduct(Product product)
+        public async Task<int> CreateProductAsync(Product product)
         {
             _ = product is null ? throw new ArgumentNullException($"{nameof(product)} is null") : product;
 
@@ -37,19 +37,19 @@ namespace Northwind.Services.DataAccess
                 Discontinued = product.Discontinued,
             };
 
-            return _factory.GetProductDataAccessObject().InsertProduct(pro);
+            return await _factory.GetProductDataAccessObject().InsertProductAsync(pro);
         }
 
         /// <inheritdoc/>
-        public bool DestroyProduct(int productId)
+        public async Task<bool> DestroyProductAsync(int productId)
         {
             var access = _factory.GetProductDataAccessObject();
 
             try
             {
-                var product = access.FindProduct(productId);
+                var product = await access.FindProductAsync(productId);
 
-                access.DeleteProduct(productId);
+                await access.DeleteProductAsync(productId);
 
                 return true;
             }
@@ -60,20 +60,23 @@ namespace Northwind.Services.DataAccess
         }
 
         /// <inheritdoc/>
-        public IList<ProductCategory> LookupCategoriesByName(IList<string> names)
+        public async Task<IList<ProductCategory>> LookupCategoriesByNameAsync(IList<string> names)
         {
             throw new NotImplementedException();
         }
 
         /// <inheritdoc/>
-        public IList<Product> LookupProductsByName(IList<string> names)
+        public async Task<IList<Product>> LookupProductsByNameAsync(IList<string> names)
         {
             throw new NotImplementedException();
         }
 
         /// <inheritdoc/>
-        public IList<Product> ShowProducts(int offset, int limit)
-            => _factory.GetProductDataAccessObject().SelectProducts(offset, limit).Select(product =>
+        public async Task<IList<Product>> ShowProductsAsync(int offset, int limit)
+        {
+            var list = await _factory.GetProductDataAccessObject().SelectProductsAsync(offset, limit);
+
+            return list.Select(product =>
             {
                 return new Product
                 {
@@ -89,9 +92,10 @@ namespace Northwind.Services.DataAccess
                     Discontinued = product.Discontinued,
                 };
             }).ToList();
+        }
 
         /// <inheritdoc/>
-        public IList<Product> ShowProductsForCategory(int categoryId)
+        public async Task<IList<Product>> ShowProductsForCategoryAsync(int categoryId)
         {
             throw new NotImplementedException();
         }
@@ -101,7 +105,9 @@ namespace Northwind.Services.DataAccess
         {
             try
             {
-                var prod = _factory.GetProductDataAccessObject().FindProduct(productId);
+                var prod = _factory.GetProductDataAccessObject().FindProductAsync(productId);
+                prod.Wait();
+                var pro = prod.Result;
 
                 if (prod is null)
                 {
@@ -112,16 +118,16 @@ namespace Northwind.Services.DataAccess
 
                 product = new Product
                 {
-                    Id = prod.Id,
-                    Name = prod.Name,
-                    SupplierId = prod.SupplierId,
-                    CategoryId = prod.CategoryId,
-                    QuantityPerUnit = prod.QuantityPerUnit,
-                    UnitPrice = prod.UnitPrice,
-                    UnitsInStock = prod.UnitsInStock,
-                    UnitsOnOrder = prod.UnitsOnOrder,
-                    ReorderLevel = prod.ReorderLevel,
-                    Discontinued = prod.Discontinued,
+                    Id = pro.Id,
+                    Name = pro.Name,
+                    SupplierId = pro.SupplierId,
+                    CategoryId = pro.CategoryId,
+                    QuantityPerUnit = pro.QuantityPerUnit,
+                    UnitPrice = pro.UnitPrice,
+                    UnitsInStock = pro.UnitsInStock,
+                    UnitsOnOrder = pro.UnitsOnOrder,
+                    ReorderLevel = pro.ReorderLevel,
+                    Discontinued = pro.Discontinued,
                 };
 
                 return true;
@@ -134,7 +140,7 @@ namespace Northwind.Services.DataAccess
         }
 
         /// <inheritdoc/>
-        public bool UpdateProduct(int productId, Product product)
+        public async Task<bool> UpdateProductAsync(int productId, Product product)
         {
             var pro = new ProductTransferObject
             {
@@ -149,7 +155,7 @@ namespace Northwind.Services.DataAccess
                 Discontinued = product.Discontinued,
             };
 
-            return _factory.GetProductDataAccessObject().UpdateProduct(pro);
+            return await _factory.GetProductDataAccessObject().UpdateProductAsync(pro);
         }
     }
 }

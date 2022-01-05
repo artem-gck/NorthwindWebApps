@@ -24,7 +24,7 @@ builder.Services.AddScoped(service =>
 builder.Services.AddTransient<NorthwindDataAccessFactory, SqlServerDataAccessFactory>();
 builder.Services.AddTransient<IProductManagementService, ProductManagementDataAccessService>();
 builder.Services.AddTransient<IProductCategoryManagementService, ProductCategoriesManagementDataAccessService>();
-builder.Services.AddTransient<IProductCategoryPicturesService, ProductCategoryPicturesManagementDataAccessService>();
+builder.Services.AddTransient<IProductCategoryPicturesManagementService, ProductCategoryPicturesManagementDataAccessService>();
 builder.Services.AddTransient<IEmployeeManagementService, EmployeeManagementDataAccessService>();
 
 //builder.Services.AddTransient<IProductManagementService, ProductManagementService>();
