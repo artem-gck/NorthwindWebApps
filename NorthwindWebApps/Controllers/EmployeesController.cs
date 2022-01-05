@@ -24,23 +24,23 @@ namespace NorthwindWebApps.Controllers
         [HttpPost]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
-        public IActionResult Create(Employee employee)
+        public async Task<IActionResult> CreateAsync(Employee employee)
         {
-            if (_service.CreateEmployee(employee) == -1)
+            if (await _service.CreateEmployeeAsync(employee) == -1)
             {
                 return BadRequest();
             }
 
-            return CreatedAtAction(nameof(Create), new { id = employee.Id }, employee);
+            return CreatedAtAction(nameof(CreateAsync), new { id = employee.Id }, employee);
         }
 
         // GET api/employees
         [HttpGet]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
-        public ActionResult<IEnumerable<Employee>> GetAll()
+        public async Task<ActionResult<IEnumerable<Employee>>> GetAllAsync()
         {
-            var employees = _service.ShowEmployees(0, int.MaxValue) as List<Employee>;
+            var employees = await _service.ShowEmployeesAsync(0, int.MaxValue) as List<Employee>;
 
             if (employees is null)
             {
@@ -70,7 +70,7 @@ namespace NorthwindWebApps.Controllers
         [HttpPut("{id}")]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         [ProducesResponseType(StatusCodes.Status204NoContent)]
-        public IActionResult Update(int id, Employee employee)
+        public async Task<IActionResult> UpdateAsync(int id, Employee employee)
         {
             Employee emp;
 
@@ -84,7 +84,7 @@ namespace NorthwindWebApps.Controllers
                 return BadRequest();
             }
 
-            _service.UpdateEmployee(id, employee);
+            await _service.UpdateEmployeeAsync(id, employee);
 
             return NoContent();
         }
@@ -93,7 +93,7 @@ namespace NorthwindWebApps.Controllers
         [HttpDelete("{id}")]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         [ProducesResponseType(StatusCodes.Status204NoContent)]
-        public IActionResult Delete(int id)
+        public async Task<IActionResult> DeleteAsync(int id)
         {
             Employee emp;
 
@@ -102,7 +102,7 @@ namespace NorthwindWebApps.Controllers
                 return BadRequest();
             }
 
-            _service.DestroyEmployee(id);
+            await _service.DestroyEmployeeAsync(id);
 
             return NoContent();
         }

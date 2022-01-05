@@ -20,20 +20,20 @@ namespace Northwind.Services.EntityFrameworkCore
             => _context = context;
 
         /// <inheritdoc/>
-        public int CreateEmployee(Employee employee)
+        public async Task<int> CreateEmployeeAsync(Employee employee)
         {
             _ = employee is null ? throw new ArgumentNullException($"{nameof(employee)} is null") : employee;
 
-            _context.Employees.Add(employee);
-            _context.SaveChanges();
+            await _context.Employees.AddAsync(employee);
+            await _context.SaveChangesAsync();
 
             return employee.Id;
         }
 
         /// <inheritdoc/>
-        public bool DestroyEmployee(int employeeId)
+        public async Task<bool> DestroyEmployeeAsync(int employeeId)
         {
-            var employee = _context.Employees.Find(employeeId);
+            var employee = await _context.Employees.FindAsync(employeeId);
 
             if (employee is null)
             {
@@ -41,13 +41,13 @@ namespace Northwind.Services.EntityFrameworkCore
             }
 
             _context.Employees.Remove(employee);
-            _context.SaveChanges();
+            await _context.SaveChangesAsync();
 
             return true;
         }
 
         /// <inheritdoc/>
-        public IList<Employee> ShowEmployees(int offset, int limit)
+        public async Task<IList<Employee>> ShowEmployeesAsync(int offset, int limit)
             => limit != -1 ? _context.Employees.Skip(offset).Take(limit).ToList() : _context.Employees.Skip(offset).ToList();
 
         /// <inheritdoc/>
@@ -64,7 +64,7 @@ namespace Northwind.Services.EntityFrameworkCore
         }
 
         /// <inheritdoc/>
-        public bool UpdateEmployee(int employeeId, Employee employee)
+        public async Task<bool> UpdateEmployeeAsync(int employeeId, Employee employee)
         {
             var emp = _context.Employees
                 .Where(cat => cat.Id == employeeId)
@@ -89,7 +89,7 @@ namespace Northwind.Services.EntityFrameworkCore
             emp.ReportsTo = employee.ReportsTo;
             emp.PhotoPath = employee.PhotoPath;
 
-            _context.SaveChanges();
+            await _context.SaveChangesAsync();
 
             if (_context.Employees.Contains(employee))
             {

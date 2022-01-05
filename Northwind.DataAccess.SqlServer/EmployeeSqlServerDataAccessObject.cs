@@ -21,7 +21,7 @@ namespace Northwind.DataAccess.Employees
         }
 
         /// <inheritdoc/>
-        public bool DeleteEmployee(int employeeId)
+        public async Task<bool> DeleteEmployeeAsync(int employeeId)
         {
             if (employeeId <= 0)
             {
@@ -38,13 +38,13 @@ SELECT @@ROWCOUNT";
                 command.Parameters.Add(empId, SqlDbType.Int);
                 command.Parameters[empId].Value = employeeId;
 
-                var result = command.ExecuteScalar();
+                var result = await command.ExecuteScalarAsync();
                 return ((int)result) > 0;
             }
         }
 
         /// <inheritdoc/>
-        public EmployeeTransferObject FindEmployee(int employeeId)
+        public async Task<EmployeeTransferObject> FindEmployeeAsync(int employeeId)
         {
             if (employeeId <= 0)
             {
@@ -61,9 +61,9 @@ WHERE c.EmployeeID = @employeeID";
                 command.Parameters.Add(empId, SqlDbType.Int);
                 command.Parameters[empId].Value = employeeId;
 
-                using (var reader = command.ExecuteReader())
+                using (var reader = await command.ExecuteReaderAsync())
                 {
-                    if (!reader.Read())
+                    if (!(await reader.ReadAsync()))
                     {
                         throw new EmployeeNotFoundException(employeeId);
                     }
@@ -74,7 +74,7 @@ WHERE c.EmployeeID = @employeeID";
         }
 
         /// <inheritdoc/>
-        public int InsertEmployee(EmployeeTransferObject employee)
+        public async Task<int> InsertEmployeeAsync(EmployeeTransferObject employee)
         {
             if (employee is null)
             {
@@ -89,13 +89,13 @@ VALUES (@lastName, @firstName, @title, @titleOfCourtesy, @birthDate, @hireDate, 
             {
                 AddSqlParameters(employee, command);
 
-                var id = command.ExecuteScalar();
+                var id = await command.ExecuteScalarAsync();
                 return (int)id;
             }
         }
 
         /// <inheritdoc/>
-        public IList<EmployeeTransferObject> SelectEmployee(int offset, int limit)
+        public async Task<IList<EmployeeTransferObject>> SelectEmployeeAsync(int offset, int limit)
         {
             if (offset < 0)
             {
@@ -114,11 +114,11 @@ OFFSET {0} ROWS
 FETCH FIRST {1} ROWS ONLY";
 
             string commandText = string.Format(CultureInfo.CurrentCulture, commandTemplate, offset, limit);
-            return this.ExecuteReader(commandText);
+            return await this.ExecuteReaderAsync(commandText);
         }
 
         /// <inheritdoc/>
-        public IList<EmployeeTransferObject> SelectEmployeeByName(ICollection<string> employeeNames)
+        public async Task<IList<EmployeeTransferObject>> SelectEmployeeByNameAsync(ICollection<string> employeeNames)
         {
             if (employeeNames == null)
             {
@@ -136,11 +136,11 @@ WHERE p.LastName in ('{0}')
 ORDER BY p.EmployeeID";
 
             string commandText = string.Format(CultureInfo.CurrentCulture, commandTemplate, string.Join("', '", employeeNames));
-            return this.ExecuteReader(commandText);
+            return await this.ExecuteReaderAsync(commandText);
         }
 
         /// <inheritdoc/>
-        public bool UpdateEmployee(EmployeeTransferObject employee)
+        public async Task<bool> UpdateEmployeeAsync(EmployeeTransferObject employee)
         {
             if (employee == null)
             {
@@ -161,7 +161,7 @@ SELECT @@ROWCOUNT";
                 command.Parameters.Add(productId, SqlDbType.Int);
                 command.Parameters[productId].Value = employee.Id;
 
-                var result = command.ExecuteScalar();
+                var result = await command.ExecuteScalarAsync();
                 return ((int)result) > 0;
             }
         }
@@ -296,14 +296,14 @@ SELECT @@ROWCOUNT";
             };
         }
 
-        private IList<EmployeeTransferObject> ExecuteReader(string commandText)
+        private async Task<IList<EmployeeTransferObject>> ExecuteReaderAsync(string commandText)
         {
             var products = new List<EmployeeTransferObject>();
 
 #pragma warning disable CA2100 // Review SQL queries for security vulnerabilities
             using (var command = new SqlCommand(commandText, this.connection))
 #pragma warning restore CA2100 // Review SQL queries for security vulnerabilities
-            using (var reader = command.ExecuteReader())
+            using (var reader = await command.ExecuteReaderAsync())
             {
                 while (reader.Read())
                 {

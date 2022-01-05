@@ -17,7 +17,7 @@ namespace Northwind.Services
         /// </summary>
         /// <param name="employee">The employee.</param>
         /// <returns>An identifier of a created employee.</returns>
-        int CreateEmployee(Employee employee);
+        Task<int> CreateEmployeeAsync(Employee employee);
 
         /// <summary>
         /// Shows the employees.
@@ -25,7 +25,7 @@ namespace Northwind.Services
         /// <param name="offset">The offset.</param>
         /// <param name="limit">The limit.</param>
         /// <returns>A <see cref="IList{T}"/> of <see cref="Employee"/>.</returns>
-        IList<Employee> ShowEmployees(int offset, int limit);
+        Task<IList<Employee>> ShowEmployeesAsync(int offset, int limit);
 
         /// <summary>
         /// Tries the show employee.
@@ -40,7 +40,7 @@ namespace Northwind.Services
         /// </summary>
         /// <param name="employeeId">The employee identifier.</param>
         /// <returns>True if a employee is destroyed; otherwise false.</returns>
-        bool DestroyEmployee(int employeeId);
+        Task<bool> DestroyEmployeeAsync(int employeeId);
 
         /// <summary>
         /// Updates the employee.
@@ -48,6 +48,6 @@ namespace Northwind.Services
         /// <param name="employeeId">The employee identifier.</param>
         /// <param name="employee">The employee.</param>
         /// <returns>True if a employee is updated; otherwise false.</returns>
-        bool UpdateEmployee(int employeeId, Employee employee);
+        Task<bool> UpdateEmployeeAsync(int employeeId, Employee employee);
     }
 }

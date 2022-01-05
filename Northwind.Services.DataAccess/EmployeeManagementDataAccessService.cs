@@ -25,30 +25,30 @@ namespace Northwind.Services.DataAccess
             => _factory = factory;
 
         /// <inheritdoc/>
-        public int CreateEmployee(Employee employee)
+        public async Task<int> CreateEmployeeAsync(Employee employee)
         {
             _ = employee is null ? throw new ArgumentNullException($"{nameof(employee)} is null") : employee;
 
             var emp = GetEmployeeTransferObject(employee);
 
-            return _factory.GetEmployeeDataAccessObject().InsertEmployee(emp);
+            return await _factory.GetEmployeeDataAccessObject().InsertEmployeeAsync(emp);
         }
 
         /// <inheritdoc/>
-        public bool DestroyEmployee(int employeeId)
+        public async Task<bool> DestroyEmployeeAsync(int employeeId)
         {
             var access = _factory.GetEmployeeDataAccessObject();
 
             try
             {
-                var emplouee = access.FindEmployee(employeeId);
+                var emplouee = await access.FindEmployeeAsync(employeeId);
 
                 if (emplouee is null)
                 {
                     return false;
                 }
 
-                access.DeleteEmployee(employeeId);
+                await access.DeleteEmployeeAsync(employeeId);
 
                 return true;
             }
@@ -59,27 +59,33 @@ namespace Northwind.Services.DataAccess
         }
 
         /// <inheritdoc/>
-        public IList<Employee> ShowEmployees(int offset, int limit)
-            => _factory.GetEmployeeDataAccessObject().SelectEmployee(offset, limit).Select(employee =>
+        public async Task<IList<Employee>> ShowEmployeesAsync(int offset, int limit)
+        {
+            var list = await _factory.GetEmployeeDataAccessObject().SelectEmployeeAsync(offset, limit);
+
+            return list.Select(employee =>
             {
                 return GetEmloyee(employee);
             }).ToList();
+        }
 
         /// <inheritdoc/>
         public bool TryShowEmployee(int employeeId, out Employee employee)
         {
             try
             {
-                var emp = _factory.GetEmployeeDataAccessObject().FindEmployee(employeeId);
+                var emp = _factory.GetEmployeeDataAccessObject().FindEmployeeAsync(employeeId);
+                emp.Wait();
+                var em = emp.Result;
 
-                if (emp is null)
+                if (em is null)
                 {
                     employee = null;
 
                     return false;
                 }
 
-                employee = GetEmloyee(emp);
+                employee = GetEmloyee(em);
 
                 return true;
             }
@@ -91,11 +97,11 @@ namespace Northwind.Services.DataAccess
         }
 
         /// <inheritdoc/>
-        public bool UpdateEmployee(int employeeId, Employee employee)
+        public async Task<bool> UpdateEmployeeAsync(int employeeId, Employee employee)
         {
             var emp = GetEmployeeTransferObject(employee);
 
-            return _factory.GetEmployeeDataAccessObject().UpdateEmployee(emp);
+            return await _factory.GetEmployeeDataAccessObject().UpdateEmployeeAsync(emp);
         }
 
         private static EmployeeTransferObject GetEmployeeTransferObject(Employee employee)
