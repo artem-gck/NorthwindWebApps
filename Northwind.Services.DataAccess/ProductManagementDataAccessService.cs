@@ -4,13 +4,22 @@ using Northwind.Services.Models;
 
 namespace Northwind.Services.DataAccess
 {
+    /// <summary>
+    /// ProductManagementDataAccessService class.
+    /// </summary>
+    /// <seealso cref="Northwind.Services.IProductManagementService" />
     public class ProductManagementDataAccessService : IProductManagementService
     {
         private static NorthwindDataAccessFactory? _factory;
 
+        /// <summary>
+        /// Initializes a new instance of the <see cref="ProductManagementDataAccessService"/> class.
+        /// </summary>
+        /// <param name="factory">The factory.</param>
         public ProductManagementDataAccessService(NorthwindDataAccessFactory factory)
             => _factory = factory;
 
+        /// <inheritdoc/>
         public int CreateProduct(Product product)
         {
             _ = product is null ? throw new ArgumentNullException($"{nameof(product)} is null") : product;
@@ -31,6 +40,7 @@ namespace Northwind.Services.DataAccess
             return _factory.GetProductDataAccessObject().InsertProduct(pro);
         }
 
+        /// <inheritdoc/>
         public bool DestroyProduct(int productId)
         {
             var access = _factory.GetProductDataAccessObject();
@@ -49,16 +59,19 @@ namespace Northwind.Services.DataAccess
             }
         }
 
+        /// <inheritdoc/>
         public IList<ProductCategory> LookupCategoriesByName(IList<string> names)
         {
             throw new NotImplementedException();
         }
 
+        /// <inheritdoc/>
         public IList<Product> LookupProductsByName(IList<string> names)
         {
             throw new NotImplementedException();
         }
 
+        /// <inheritdoc/>
         public IList<Product> ShowProducts(int offset, int limit)
             => _factory.GetProductDataAccessObject().SelectProducts(offset, limit).Select(product =>
             {
@@ -77,11 +90,13 @@ namespace Northwind.Services.DataAccess
                 };
             }).ToList();
 
+        /// <inheritdoc/>
         public IList<Product> ShowProductsForCategory(int categoryId)
         {
             throw new NotImplementedException();
         }
 
+        /// <inheritdoc/>
         public bool TryShowProduct(int productId, out Product product)
         {
             try
@@ -118,6 +133,7 @@ namespace Northwind.Services.DataAccess
             }
         }
 
+        /// <inheritdoc/>
         public bool UpdateProduct(int productId, Product product)
         {
             var pro = new ProductTransferObject

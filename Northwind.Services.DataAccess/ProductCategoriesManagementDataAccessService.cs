@@ -4,13 +4,22 @@ using Northwind.Services.Models;
 
 namespace Northwind.Services.DataAccess
 {
+    /// <summary>
+    /// ProductCategoriesManagementDataAccessService class.
+    /// </summary>
+    /// <seealso cref="Northwind.Services.IProductCategoryManagementService" />
     public class ProductCategoriesManagementDataAccessService : IProductCategoryManagementService
     {
         private static NorthwindDataAccessFactory? _factory;
 
+        /// <summary>
+        /// Initializes a new instance of the <see cref="ProductCategoriesManagementDataAccessService"/> class.
+        /// </summary>
+        /// <param name="factory">The factory.</param>
         public ProductCategoriesManagementDataAccessService(NorthwindDataAccessFactory factory)
             => _factory = factory;
 
+        /// <inheritdoc/>
         public int CreateCategory(ProductCategory productCategory)
         {
             _ = productCategory is null ? throw new ArgumentNullException($"{nameof(productCategory)} is null") : productCategory;
@@ -25,6 +34,7 @@ namespace Northwind.Services.DataAccess
             return _factory.GetProductCategoryDataAccessObject().InsertProductCategory(category);
         }
 
+        /// <inheritdoc/>
         public bool DestroyCategory(int categoryId)
         {
             var access = _factory.GetProductCategoryDataAccessObject();
@@ -48,6 +58,7 @@ namespace Northwind.Services.DataAccess
             }
         }
 
+        /// <inheritdoc/>
         public IList<ProductCategory> ShowCategories(int offset, int limit)
             => _factory.GetProductCategoryDataAccessObject().SelectProductCategories(offset, limit).Select(category =>
             {
@@ -60,6 +71,7 @@ namespace Northwind.Services.DataAccess
                 };
             }).ToList();
 
+        /// <inheritdoc/>
         public bool TryShowCategory(int categoryId, out ProductCategory productCategory)
         {
             try
@@ -90,6 +102,7 @@ namespace Northwind.Services.DataAccess
             }
         }
 
+        /// <inheritdoc/>
         public bool UpdateCategories(int categoryId, ProductCategory productCategory)
         {
             var category = new ProductCategoryTransferObject

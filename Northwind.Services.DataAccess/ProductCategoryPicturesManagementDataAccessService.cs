@@ -4,13 +4,22 @@ using Northwind.Services.Models;
 
 namespace Northwind.Services.DataAccess
 {
+    /// <summary>
+    /// ProductCategoryPicturesManagementDataAccessService class.
+    /// </summary>
+    /// <seealso cref="Northwind.Services.IProductCategoryPicturesService" />
     public class ProductCategoryPicturesManagementDataAccessService : IProductCategoryPicturesService
     {
         private static NorthwindDataAccessFactory? _factory;
 
+        /// <summary>
+        /// Initializes a new instance of the <see cref="ProductCategoryPicturesManagementDataAccessService"/> class.
+        /// </summary>
+        /// <param name="factory">The factory.</param>
         public ProductCategoryPicturesManagementDataAccessService(NorthwindDataAccessFactory factory)
             => _factory = factory;
 
+        /// <inheritdoc/>
         public bool DestroyPicture(int categoryId)
         {
             var access = _factory.GetProductCategoryDataAccessObject();
@@ -29,6 +38,7 @@ namespace Northwind.Services.DataAccess
             return true;
         }
 
+        /// <inheritdoc/>
         public bool TryShowPicture(int categoryId, out byte[] bytes)
         {
             var access = _factory.GetProductCategoryDataAccessObject();
@@ -46,6 +56,7 @@ namespace Northwind.Services.DataAccess
             }
         }
 
+        /// <inheritdoc/>
         public bool UpdatePicture(int categoryId, Stream stream)
         {
             var access = _factory.GetProductCategoryDataAccessObject();

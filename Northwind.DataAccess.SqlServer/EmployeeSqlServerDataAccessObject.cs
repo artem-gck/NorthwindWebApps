@@ -20,6 +20,7 @@ namespace Northwind.DataAccess.Employees
             this.connection = connection ?? throw new ArgumentNullException(nameof(connection));
         }
 
+        /// <inheritdoc/>
         public bool DeleteEmployee(int employeeId)
         {
             if (employeeId <= 0)
@@ -42,6 +43,7 @@ SELECT @@ROWCOUNT";
             }
         }
 
+        /// <inheritdoc/>
         public EmployeeTransferObject FindEmployee(int employeeId)
         {
             if (employeeId <= 0)
@@ -71,6 +73,7 @@ WHERE c.EmployeeID = @employeeID";
             }
         }
 
+        /// <inheritdoc/>
         public int InsertEmployee(EmployeeTransferObject employee)
         {
             if (employee is null)
@@ -91,6 +94,7 @@ VALUES (@lastName, @firstName, @title, @titleOfCourtesy, @birthDate, @hireDate, 
             }
         }
 
+        /// <inheritdoc/>
         public IList<EmployeeTransferObject> SelectEmployee(int offset, int limit)
         {
             if (offset < 0)
@@ -113,6 +117,7 @@ FETCH FIRST {1} ROWS ONLY";
             return this.ExecuteReader(commandText);
         }
 
+        /// <inheritdoc/>
         public IList<EmployeeTransferObject> SelectEmployeeByName(ICollection<string> employeeNames)
         {
             if (employeeNames == null)
@@ -134,6 +139,7 @@ ORDER BY p.EmployeeID";
             return this.ExecuteReader(commandText);
         }
 
+        /// <inheritdoc/>
         public bool UpdateEmployee(EmployeeTransferObject employee)
         {
             if (employee == null)

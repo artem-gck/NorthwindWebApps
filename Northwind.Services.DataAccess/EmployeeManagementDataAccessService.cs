@@ -9,13 +9,22 @@ using System.Threading.Tasks;
 
 namespace Northwind.Services.DataAccess
 {
+    /// <summary>
+    /// EmployeeManagementDataAccessService class.
+    /// </summary>
+    /// <seealso cref="Northwind.Services.IEmployeeManagementService" />
     public class EmployeeManagementDataAccessService : IEmployeeManagementService
     {
         private static NorthwindDataAccessFactory? _factory;
 
+        /// <summary>
+        /// Initializes a new instance of the <see cref="EmployeeManagementDataAccessService"/> class.
+        /// </summary>
+        /// <param name="factory">The factory.</param>
         public EmployeeManagementDataAccessService(NorthwindDataAccessFactory factory)
             => _factory = factory;
 
+        /// <inheritdoc/>
         public int CreateEmployee(Employee employee)
         {
             _ = employee is null ? throw new ArgumentNullException($"{nameof(employee)} is null") : employee;
@@ -25,6 +34,7 @@ namespace Northwind.Services.DataAccess
             return _factory.GetEmployeeDataAccessObject().InsertEmployee(emp);
         }
 
+        /// <inheritdoc/>
         public bool DestroyEmployee(int employeeId)
         {
             var access = _factory.GetEmployeeDataAccessObject();
@@ -48,12 +58,14 @@ namespace Northwind.Services.DataAccess
             }
         }
 
+        /// <inheritdoc/>
         public IList<Employee> ShowEmployees(int offset, int limit)
             => _factory.GetEmployeeDataAccessObject().SelectEmployee(offset, limit).Select(employee =>
             {
                 return GetEmloyee(employee);
             }).ToList();
 
+        /// <inheritdoc/>
         public bool TryShowEmployee(int employeeId, out Employee employee)
         {
             try
@@ -78,6 +90,7 @@ namespace Northwind.Services.DataAccess
             }
         }
 
+        /// <inheritdoc/>
         public bool UpdateEmployee(int employeeId, Employee employee)
         {
             var emp = GetEmployeeTransferObject(employee);
