@@ -10,12 +10,12 @@ namespace Northwind.Services
     public interface IProductCategoryManagementService
     {
         /// <summary>
-        /// Shows a list of product categories using specified offset and limit for pagination.
+        /// Shows the categories asynchronous.
         /// </summary>
-        /// <param name="offset">An offset of the first element to return.</param>
-        /// <param name="limit">A limit of elements to return.</param>
-        /// <returns>A <see cref="IList{T}"/> of <see cref="ProductCategory"/>.</returns>
-        IList<ProductCategory> ShowCategories(int offset, int limit);
+        /// <param name="offset">The offset.</param>
+        /// <param name="limit">The limit.</param>
+        /// <returns>A <see cref="Task{T}"/> of <see cref="IList{T}"/> of <see cref="ProductCategory"/>.</returns>
+        Task<IList<ProductCategory>> ShowCategoriesAsync(int offset, int limit);
 
         /// <summary>
         /// Try to show a product category with specified identifier.

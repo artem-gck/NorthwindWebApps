@@ -96,7 +96,7 @@ WHERE c.CategoryID = @categoryId";
         }
 
         /// <inheritdoc/>
-        public IList<ProductCategoryTransferObject> SelectProductCategories(int offset, int limit)
+        public async Task<IList<ProductCategoryTransferObject>> SelectProductCategoriesAsync(int offset, int limit)
         {
             if (offset < 0)
             {
@@ -115,7 +115,7 @@ OFFSET {0} ROWS
 FETCH FIRST {1} ROWS ONLY";
 
             string commandText = string.Format(CultureInfo.CurrentCulture, commandTemplate, offset, limit);
-            return this.ExecuteReader(commandText);
+            return await this.ExecuteReaderAsync(commandText);
         }
 
         /// <inheritdoc/>
@@ -237,6 +237,24 @@ SELECT @@ROWCOUNT";
             using (var command = new SqlCommand(commandText, this.connection))
 #pragma warning restore CA2100 // Review SQL queries for security vulnerabilities
             using (var reader = command.ExecuteReader())
+            {
+                while (reader.Read())
+                {
+                    productCategories.Add(CreateProductCategory(reader));
+                }
+            }
+
+            return productCategories;
+        }
+
+        private async Task<IList<ProductCategoryTransferObject>> ExecuteReaderAsync(string commandText)
+        {
+            var productCategories = new List<ProductCategoryTransferObject>();
+
+#pragma warning disable CA2100 // Review SQL queries for security vulnerabilities
+            using (var command = new SqlCommand(commandText, this.connection))
+#pragma warning restore CA2100 // Review SQL queries for security vulnerabilities
+            using (var reader = await command.ExecuteReaderAsync())
             {
                 while (reader.Read())
                 {

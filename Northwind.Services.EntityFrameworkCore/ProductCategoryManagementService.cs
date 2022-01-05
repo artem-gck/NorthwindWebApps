@@ -43,8 +43,12 @@ namespace Northwind.Services.EntityFrameworkCore
         }
 
         /// <inheritdoc/>
-        public IList<ProductCategory> ShowCategories(int offset, int limit)
-            => limit != -1 ? _context.Categories.Skip(offset).Take(limit).ToList() : _context.Categories.Skip(offset).ToList();
+        public async Task<IList<ProductCategory>> ShowCategoriesAsync(int offset, int limit)
+        {
+            var list = limit != -1 ? _context.Categories.Skip(offset).Take(limit).ToList() : _context.Categories.Skip(offset).ToList();
+            
+            return list;
+        }
 
         /// <inheritdoc/>
         public bool TryShowCategory(int categoryId, out ProductCategory productCategory)

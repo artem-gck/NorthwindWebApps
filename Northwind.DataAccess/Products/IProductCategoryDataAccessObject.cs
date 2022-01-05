@@ -36,12 +36,12 @@ namespace Northwind.DataAccess.Products
         ProductCategoryTransferObject FindProductCategory(int productCategoryId);
 
         /// <summary>
-        /// Selects product categories using specified offset and limit.
+        /// Selects the product categories asynchronous.
         /// </summary>
-        /// <param name="offset">An offset of the first object.</param>
-        /// <param name="limit">A limit of returned objects.</param>
-        /// <returns>A <see cref="List{T}"/> of <see cref="ProductCategoryTransferObject"/>.</returns>
-        IList<ProductCategoryTransferObject> SelectProductCategories(int offset, int limit);
+        /// <param name="offset">The offset.</param>
+        /// <param name="limit">The limit.</param>
+        /// <returns>A <see cref="Task{T}"/> of <see cref="IList{T}"/> of <see cref="ProductCategoryTransferObject"/>.</returns>
+        Task<IList<ProductCategoryTransferObject>> SelectProductCategoriesAsync(int offset, int limit);
 
         /// <summary>
         /// Selects all Northwind product categories with specified names.

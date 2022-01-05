@@ -59,17 +59,21 @@ namespace Northwind.Services.DataAccess
         }
 
         /// <inheritdoc/>
-        public IList<ProductCategory> ShowCategories(int offset, int limit)
-            => _factory.GetProductCategoryDataAccessObject().SelectProductCategories(offset, limit).Select(category =>
-            {
-                return new ProductCategory
+        public async Task<IList<ProductCategory>> ShowCategoriesAsync(int offset, int limit)
+        {
+            var list = await _factory.GetProductCategoryDataAccessObject().SelectProductCategoriesAsync(offset, limit);
+
+            return list.Select(category =>
                 {
-                    Id = category.Id,
-                    Name = category.Name,
-                    Description = category.Description,
-                    Picture = category.Picture,
-                };
-            }).ToList();
+                    return new ProductCategory
+                    {
+                        Id = category.Id,
+                        Name = category.Name,
+                        Description = category.Description,
+                        Picture = category.Picture,
+                    };
+                }).ToList();
+        }
 
         /// <inheritdoc/>
         public bool TryShowCategory(int categoryId, out ProductCategory productCategory)

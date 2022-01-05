@@ -46,9 +46,9 @@ namespace NorthwindWebApps.Controllers
         [HttpGet]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
-        public ActionResult<IEnumerable<ProductCategory>> GetAll()
+        public async Task<ActionResult<IEnumerable<ProductCategory>>> GetAll()
         {
-            var category = _categoryService.ShowCategories(0, int.MaxValue) as List<ProductCategory>;
+            var category = await _categoryService.ShowCategoriesAsync(0, int.MaxValue) as List<ProductCategory>;
 
             if (category is null)
             {
