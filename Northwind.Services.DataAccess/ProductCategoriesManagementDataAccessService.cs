@@ -20,7 +20,7 @@ namespace Northwind.Services.DataAccess
             => _factory = factory;
 
         /// <inheritdoc/>
-        public int CreateCategory(ProductCategory productCategory)
+        public async Task<int> CreateCategoryAsync(ProductCategory productCategory)
         {
             _ = productCategory is null ? throw new ArgumentNullException($"{nameof(productCategory)} is null") : productCategory;
 
@@ -31,24 +31,24 @@ namespace Northwind.Services.DataAccess
                 Picture = productCategory.Picture,
             };
 
-            return _factory.GetProductCategoryDataAccessObject().InsertProductCategory(category);
+            return await _factory.GetProductCategoryDataAccessObject().InsertProductCategoryAsync(category);
         }
 
         /// <inheritdoc/>
-        public bool DestroyCategory(int categoryId)
+        public async Task<bool> DestroyCategoryAsync(int categoryId)
         {
             var access = _factory.GetProductCategoryDataAccessObject();
 
             try
             {
-                var category = access.FindProductCategory(categoryId);
+                var category = await access.FindProductCategoryAsync(categoryId);
 
                 if (category is null)
                 {
                     return false;
                 }
 
-                access.DeleteProductCategory(categoryId);
+                await access.DeleteProductCategoryAsync(categoryId);
 
                 return true;
             }
@@ -80,7 +80,7 @@ namespace Northwind.Services.DataAccess
         {
             try
             {
-                var category = _factory.GetProductCategoryDataAccessObject().FindProductCategory(categoryId);
+                var category = _factory.GetProductCategoryDataAccessObject().FindProductCategoryAsync(categoryId);
 
                 if (category is null)
                 {
@@ -88,13 +88,15 @@ namespace Northwind.Services.DataAccess
 
                     return false;
                 }
+                category.Wait();
+                var cat = category.Result;
 
                 productCategory = new ProductCategory
                 {
-                    Id = category.Id,
-                    Name = category.Name,
-                    Description = category.Description,
-                    Picture = category.Picture,
+                    Id = cat.Id,
+                    Name = cat.Name,
+                    Description = cat.Description,
+                    Picture = cat.Picture,
                 };
 
                 return true;
@@ -107,7 +109,7 @@ namespace Northwind.Services.DataAccess
         }
 
         /// <inheritdoc/>
-        public bool UpdateCategories(int categoryId, ProductCategory productCategory)
+        public async Task<bool> UpdateCategoriesAsync(int categoryId, ProductCategory productCategory)
         {
             var category = new ProductCategoryTransferObject
             {
@@ -116,7 +118,7 @@ namespace Northwind.Services.DataAccess
                 Picture = productCategory.Picture,
             };
 
-            return _factory.GetProductCategoryDataAccessObject().UpdateProductCategory(category);
+            return await _factory.GetProductCategoryDataAccessObject().UpdateProductCategoryAsync(category);
         }
     }
 }

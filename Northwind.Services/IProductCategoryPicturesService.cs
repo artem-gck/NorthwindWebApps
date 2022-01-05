@@ -19,13 +19,13 @@
         /// <param name="categoryId">A product category identifier.</param>
         /// <param name="stream">A <see cref="Stream"/>.</param>
         /// <returns>True if a product category is exist; otherwise false.</returns>
-        bool UpdatePicture(int categoryId, Stream stream);
+        Task<bool> UpdatePictureAsync(int categoryId, Stream stream);
 
         /// <summary>
         /// Destroy a product category picture.
         /// </summary>
         /// <param name="categoryId">A product category identifier.</param>
         /// <returns>True if a product category is exist; otherwise false.</returns>
-        bool DestroyPicture(int categoryId);
+        Task<bool> DestroyPictureAsync(int categoryId);
     }
 }

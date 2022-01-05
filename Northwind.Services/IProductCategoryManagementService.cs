@@ -1,6 +1,4 @@
-﻿
-
-using Northwind.Services.Models;
+﻿using Northwind.Services.Models;
 
 namespace Northwind.Services
 {
@@ -30,14 +28,14 @@ namespace Northwind.Services
         /// </summary>
         /// <param name="productCategory">A <see cref="ProductCategory"/> to create.</param>
         /// <returns>An identifier of a created product category.</returns>
-        int CreateCategory(ProductCategory productCategory);
+        Task<int> CreateCategoryAsync(ProductCategory productCategory);
 
         /// <summary>
         /// Destroys an existed product category.
         /// </summary>
         /// <param name="categoryId">A product category identifier.</param>
         /// <returns>True if a product category is destroyed; otherwise false.</returns>
-        bool DestroyCategory(int categoryId);
+        Task<bool> DestroyCategoryAsync(int categoryId);
 
         /// <summary>
         /// Updates a product category.
@@ -45,6 +43,6 @@ namespace Northwind.Services
         /// <param name="categoryId">A product category identifier.</param>
         /// <param name="productCategory">A <see cref="ProductCategory"/>.</param>
         /// <returns>True if a product category is updated; otherwise false.</returns>
-        bool UpdateCategories(int categoryId, ProductCategory productCategory);
+        Task<bool> UpdateCategoriesAsync(int categoryId, ProductCategory productCategory);
     }
 }

@@ -13,9 +13,9 @@ namespace Northwind.Services.EntityFrameworkCore
             => _context = context;
 
         /// <inheritdoc/>
-        public bool DestroyPicture(int categoryId)
+        public async Task<bool> DestroyPictureAsync(int categoryId)
         {
-            var category = _context.Categories.Find(categoryId);
+            var category = await _context.Categories.FindAsync(categoryId);
 
             if (category is null)
             {
@@ -24,7 +24,7 @@ namespace Northwind.Services.EntityFrameworkCore
 
             category.Picture = null;
             //_context.Categories.Remove(category);
-            _context.SaveChanges();
+            await _context.SaveChangesAsync();
 
             return true;
         }
@@ -45,9 +45,9 @@ namespace Northwind.Services.EntityFrameworkCore
         }
 
         /// <inheritdoc/>
-        public bool UpdatePicture(int categoryId, Stream stream)
+        public async Task<bool> UpdatePictureAsync(int categoryId, Stream stream)
         {
-            var category = _context.Categories.Find(categoryId);
+            var category = await _context.Categories.FindAsync(categoryId);
 
             if (category is null)
             {
@@ -56,13 +56,13 @@ namespace Northwind.Services.EntityFrameworkCore
 
             using (var memoryStream = new MemoryStream())
             {
-                stream.CopyTo(memoryStream);
+                await stream.CopyToAsync(memoryStream);
 
                 if (memoryStream.Length < 2097152)
                 {
                     category.Picture = memoryStream.ToArray();
 
-                    _context.SaveChanges();
+                    await _context.SaveChangesAsync();
                 }
                 else
                 {

@@ -32,21 +32,21 @@ namespace NorthwindWebApps.Controllers
         [HttpPost]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
-        public IActionResult Create(ProductCategory category)
+        public async Task<IActionResult> CreateAsync(ProductCategory category)
         {
-            if (_categoryService.CreateCategory(category) == -1)
+            if (await _categoryService.CreateCategoryAsync(category) == -1)
             {
                 return BadRequest();
             }
 
-            return CreatedAtAction(nameof(Create), new { id = category.Id }, category);
+            return CreatedAtAction(nameof(CreateAsync), new { id = category.Id }, category);
         }
 
         // GET api/categories
         [HttpGet]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
-        public async Task<ActionResult<IEnumerable<ProductCategory>>> GetAll()
+        public async Task<ActionResult<IEnumerable<ProductCategory>>> GetAllAsync()
         {
             var category = await _categoryService.ShowCategoriesAsync(0, int.MaxValue) as List<ProductCategory>;
 
@@ -62,7 +62,7 @@ namespace NorthwindWebApps.Controllers
         [HttpGet("{id}")]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
-        public ActionResult<ProductCategory> Get(int id)
+        public async Task<ActionResult<ProductCategory>> GetAsync(int id)
         {
             ProductCategory category;
 
@@ -78,7 +78,7 @@ namespace NorthwindWebApps.Controllers
         [HttpPut("{id}")]
         [ProducesResponseType(StatusCodes.Status204NoContent)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
-        public IActionResult Update(int id, ProductCategory category)
+        public async Task<IActionResult> UpdateAsync(int id, ProductCategory category)
         {
             ProductCategory cat;
 
@@ -92,7 +92,7 @@ namespace NorthwindWebApps.Controllers
                 return BadRequest();
             }
 
-            _categoryService.UpdateCategories(id, category);
+            await _categoryService.UpdateCategoriesAsync(id, category);
 
             return NoContent();
         }
@@ -101,7 +101,7 @@ namespace NorthwindWebApps.Controllers
         [HttpDelete("{id}")]
         [ProducesResponseType(StatusCodes.Status204NoContent)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
-        public IActionResult Delete(int id)
+        public async Task<IActionResult> DeleteAsync(int id)
         {
             ProductCategory cat;
 
@@ -110,7 +110,7 @@ namespace NorthwindWebApps.Controllers
                 return BadRequest();
             }
 
-            _categoryService.DestroyCategory(id);
+            await _categoryService.DestroyCategoryAsync(id);
 
             return NoContent();
         }
@@ -118,13 +118,13 @@ namespace NorthwindWebApps.Controllers
         // PUT api/categories/2/picture
         [HttpPut("{id}/picture")]
         [ProducesResponseType(StatusCodes.Status200OK)]
-        public IActionResult UpdatePicture(int id, IFormFile file)
+        public async Task<IActionResult> UpdatePictureAsync(int id, IFormFile file)
         {
             var size = file.Length;
 
             if (file.Length > 0)
             {
-                _pictureService.UpdatePicture(id, file.OpenReadStream());
+                await _pictureService.UpdatePictureAsync(id, file.OpenReadStream());
             }
 
             return Ok(new { size });
@@ -148,7 +148,7 @@ namespace NorthwindWebApps.Controllers
         [HttpDelete("{id}/picture")]
         [ProducesResponseType(StatusCodes.Status204NoContent)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
-        public IActionResult DeletePicture(int id)
+        public async Task<IActionResult> DeletePictureAsync(int id)
         {
             ProductCategory cat;
 
@@ -157,7 +157,7 @@ namespace NorthwindWebApps.Controllers
                 return BadRequest();
             }
 
-            _pictureService.DestroyPicture(id);
+            await _pictureService.DestroyPictureAsync(id);
 
             return NoContent();
         }

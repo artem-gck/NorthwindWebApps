@@ -16,18 +16,18 @@ namespace Northwind.Services.EntityFrameworkCore
             => _context = context;
 
         /// <inheritdoc/>
-        public int CreateCategory(ProductCategory productCategory)
+        public async Task<int> CreateCategoryAsync(ProductCategory productCategory)
         {
             _ = productCategory is null ? throw new ArgumentNullException($"{nameof(productCategory)} is null") : productCategory;
 
             _context.Categories.Add(productCategory);
-            _context.SaveChanges();
+            await _context.SaveChangesAsync();
 
             return productCategory.Id;
         }
 
         /// <inheritdoc/>
-        public bool DestroyCategory(int categoryId)
+        public async Task<bool> DestroyCategoryAsync(int categoryId)
         {
             var category = _context.Categories.Find(categoryId);
 
@@ -37,7 +37,7 @@ namespace Northwind.Services.EntityFrameworkCore
             }
 
             _context.Categories.Remove(category);
-            _context.SaveChanges();
+            await _context.SaveChangesAsync();
 
             return true;
         }
@@ -64,7 +64,7 @@ namespace Northwind.Services.EntityFrameworkCore
         }
 
         /// <inheritdoc/>
-        public bool UpdateCategories(int categoryId, ProductCategory productCategory)
+        public async Task<bool> UpdateCategoriesAsync(int categoryId, ProductCategory productCategory)
         {
             var category = _context.Categories
                 .Where(cat => cat.Id == categoryId)
@@ -73,7 +73,7 @@ namespace Northwind.Services.EntityFrameworkCore
             category.Name = productCategory.Name;
             category.Description = productCategory.Description;
 
-            _context.SaveChanges();
+            await _context.SaveChangesAsync();
 
             if (_context.Categories.Contains(productCategory))
             {

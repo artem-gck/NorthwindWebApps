@@ -22,7 +22,7 @@ namespace Northwind.DataAccess.SqlServer
         }
 
         /// <inheritdoc/>
-        public int InsertProductCategory(ProductCategoryTransferObject productCategory)
+        public async Task<int> InsertProductCategoryAsync(ProductCategoryTransferObject productCategory)
         {
             if (productCategory == null)
             {
@@ -37,13 +37,13 @@ VALUES (@categoryName, @description, @picture)";
             {
                 AddSqlParameters(productCategory, command);
 
-                var id = command.ExecuteScalar();
+                var id = await command.ExecuteScalarAsync();
                 return (int)id;
             }
         }
 
         /// <inheritdoc/>
-        public bool DeleteProductCategory(int productCategoryId)
+        public async Task<bool> DeleteProductCategoryAsync(int productCategoryId)
         {
             if (productCategoryId <= 0)
             {
@@ -60,13 +60,13 @@ SELECT @@ROWCOUNT";
                 command.Parameters.Add(categoryId, SqlDbType.Int);
                 command.Parameters[categoryId].Value = productCategoryId;
 
-                var result = command.ExecuteScalar();
+                var result = await command.ExecuteScalarAsync();
                 return ((int)result) > 0;
             }
         }
 
         /// <inheritdoc/>
-        public ProductCategoryTransferObject FindProductCategory(int productCategoryId)
+        public async Task<ProductCategoryTransferObject> FindProductCategoryAsync(int productCategoryId)
         {
             if (productCategoryId <= 0)
             {
@@ -83,7 +83,7 @@ WHERE c.CategoryID = @categoryId";
                 command.Parameters.Add(categoryId, SqlDbType.Int);
                 command.Parameters[categoryId].Value = productCategoryId;
 
-                using (var reader = command.ExecuteReader())
+                using (var reader = await command.ExecuteReaderAsync())
                 {
                     if (!reader.Read())
                     {
@@ -119,7 +119,7 @@ FETCH FIRST {1} ROWS ONLY";
         }
 
         /// <inheritdoc/>
-        public IList<ProductCategoryTransferObject> SelectProductCategoriesByName(ICollection<string> productCategoryNames)
+        public async Task<IList<ProductCategoryTransferObject>> SelectProductCategoriesByNameAsync(ICollection<string> productCategoryNames)
         {
             if (productCategoryNames == null)
             {
@@ -137,11 +137,11 @@ WHERE c.CategoryName in ('{0}')
 ORDER BY c.CategoryID";
 
             string commandText = string.Format(CultureInfo.CurrentCulture, commandTemplate, string.Join("', '", productCategoryNames));
-            return this.ExecuteReader(commandText);
+            return await this.ExecuteReaderAsync(commandText);
         }
 
         /// <inheritdoc/>
-        public bool UpdateProductCategory(ProductCategoryTransferObject productCategory)
+        public async Task<bool> UpdateProductCategoryAsync(ProductCategoryTransferObject productCategory)
         {
             if (productCategory == null)
             {
@@ -161,7 +161,7 @@ SELECT @@ROWCOUNT";
                 command.Parameters.Add(categoryId, SqlDbType.Int);
                 command.Parameters[categoryId].Value = productCategory.Id;
 
-                var result = command.ExecuteScalar();
+                var result = await command.ExecuteScalarAsync();
                 return ((int)result) > 0;
             }
         }
@@ -227,24 +227,6 @@ SELECT @@ROWCOUNT";
             {
                 command.Parameters[pictureParameter].Value = DBNull.Value;
             }
-        }
-
-        private IList<ProductCategoryTransferObject> ExecuteReader(string commandText)
-        {
-            var productCategories = new List<ProductCategoryTransferObject>();
-
-#pragma warning disable CA2100 // Review SQL queries for security vulnerabilities
-            using (var command = new SqlCommand(commandText, this.connection))
-#pragma warning restore CA2100 // Review SQL queries for security vulnerabilities
-            using (var reader = command.ExecuteReader())
-            {
-                while (reader.Read())
-                {
-                    productCategories.Add(CreateProductCategory(reader));
-                }
-            }
-
-            return productCategories;
         }
 
         private async Task<IList<ProductCategoryTransferObject>> ExecuteReaderAsync(string commandText)

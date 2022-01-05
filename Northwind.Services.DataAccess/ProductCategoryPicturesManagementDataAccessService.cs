@@ -20,11 +20,11 @@ namespace Northwind.Services.DataAccess
             => _factory = factory;
 
         /// <inheritdoc/>
-        public bool DestroyPicture(int categoryId)
+        public async Task<bool> DestroyPictureAsync(int categoryId)
         {
             var access = _factory.GetProductCategoryDataAccessObject();
 
-            var category = access.FindProductCategory(categoryId);
+            var category = await access.FindProductCategoryAsync(categoryId);
 
             if (category is null)
             {
@@ -33,7 +33,7 @@ namespace Northwind.Services.DataAccess
 
             category.Picture = null;
 
-            access.UpdateProductCategory(category);
+            await access.UpdateProductCategoryAsync(category);
 
             return true;
         }
@@ -45,8 +45,9 @@ namespace Northwind.Services.DataAccess
 
             try
             {
-                var category = access.FindProductCategory(categoryId);
-                bytes = category.Picture;
+                var category = access.FindProductCategoryAsync(categoryId);
+                category.Wait();
+                bytes = category.Result.Picture;
                 return true;
             }
             catch (ProductCategoryNotFoundException)
@@ -57,13 +58,13 @@ namespace Northwind.Services.DataAccess
         }
 
         /// <inheritdoc/>
-        public bool UpdatePicture(int categoryId, Stream stream)
+        public async Task<bool> UpdatePictureAsync(int categoryId, Stream stream)
         {
             var access = _factory.GetProductCategoryDataAccessObject();
 
             try
             {
-                var category = access.FindProductCategory(categoryId);
+                var category = await access.FindProductCategoryAsync(categoryId);
 
                 using (var memoryStream = new MemoryStream())
                 {
@@ -72,7 +73,7 @@ namespace Northwind.Services.DataAccess
                     if (memoryStream.Length < 2097152)
                     {
                         category.Picture = memoryStream.ToArray();
-                        access.UpdateProductCategory(category);
+                        await access.UpdateProductCategoryAsync(category);
                     }
                     else
                     {
