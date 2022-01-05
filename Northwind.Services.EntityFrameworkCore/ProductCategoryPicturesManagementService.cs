@@ -1,6 +1,4 @@
-﻿
-
-using Northwind.Services.Models;
+﻿using Northwind.Services.EntityFrameworkCore.Context;
 
 namespace Northwind.Services.EntityFrameworkCore
 {

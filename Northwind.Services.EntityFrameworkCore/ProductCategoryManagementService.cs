@@ -1,4 +1,6 @@
 ﻿using Northwind.Services;
+using Northwind.Services.EntityFrameworkCore.Context;
+using Northwind.Services.EntityFrameworkCore.Entities;
 using Northwind.Services.Models;
 
 namespace Northwind.Services.EntityFrameworkCore
@@ -20,7 +22,7 @@ namespace Northwind.Services.EntityFrameworkCore
         {
             _ = productCategory is null ? throw new ArgumentNullException($"{nameof(productCategory)} is null") : productCategory;
 
-            await _context.Categories.AddAsync(productCategory);
+            await _context.Categories.AddAsync(GetCategory(productCategory));
             await _context.SaveChangesAsync();
 
             return productCategory.Id;
@@ -45,7 +47,7 @@ namespace Northwind.Services.EntityFrameworkCore
         /// <inheritdoc/>
         public async Task<IList<ProductCategory>> ShowCategoriesAsync(int offset, int limit)
         {
-            var list = limit != -1 ? _context.Categories.Skip(offset).Take(limit).ToList() : _context.Categories.Skip(offset).ToList();
+            var list = limit != -1 ? _context.Categories.Skip(offset).Take(limit).Select(category => GetProductCategory(category)).ToList() : _context.Categories.Skip(offset).Select(category => GetProductCategory(category)).ToList();
             
             return list;
         }
@@ -53,7 +55,7 @@ namespace Northwind.Services.EntityFrameworkCore
         /// <inheritdoc/>
         public bool TryShowCategory(int categoryId, out ProductCategory productCategory)
         {
-            productCategory = _context.Categories.Find(categoryId);
+            productCategory = GetProductCategory(_context.Categories.Find(categoryId));
 
             if (productCategory is null)
             {
@@ -67,20 +69,38 @@ namespace Northwind.Services.EntityFrameworkCore
         public async Task<bool> UpdateCategoriesAsync(int categoryId, ProductCategory productCategory)
         {
             var category = _context.Categories
-                .Where(cat => cat.Id == categoryId)
+                .Where(cat => cat.CategoryId == categoryId)
                 .FirstOrDefault();
 
-            category.Name = productCategory.Name;
+            category.CategoryName = productCategory.Name;
             category.Description = productCategory.Description;
 
             await _context.SaveChangesAsync();
 
-            if (_context.Categories.Contains(productCategory))
+            if (_context.Categories.Contains(GetCategory(productCategory)))
             {
                 return true;
             }
 
             return false;
         }
+
+        private static Category GetCategory(ProductCategory category)
+            => new()
+            {
+                CategoryId = category.Id,
+                CategoryName = category.Name,
+                Description = category.Description,
+                Picture = category.Picture,
+            };
+
+        private static ProductCategory GetProductCategory(Category category)
+            => new()
+            {
+                Id = category.CategoryId,
+                Name = category.CategoryName,
+                Description = category.Description,
+                Picture = category.Picture,
+            };
     }
 }

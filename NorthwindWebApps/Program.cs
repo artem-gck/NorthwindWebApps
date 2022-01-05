@@ -6,31 +6,34 @@ using Northwind.DataAccess;
 using Northwind.Services.DataAccess;
 using Northwind.DataAccess.SqlServer;
 using Northwind.DataAccess.Employees;
+using Northwind.Services.EntityFrameworkCore.Context;
 
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
 
 builder.Services.AddControllers();
+//builder.Services.AddDbContext<NorthwindContext>(opt =>
+//    opt.UseInMemoryDatabase("NorthwindList"));
 builder.Services.AddDbContext<NorthwindContext>(opt =>
-    opt.UseInMemoryDatabase("NorthwindList"));
-builder.Services.AddScoped(service =>
-{
-    var connectToDbString = builder.Configuration.GetConnectionString("DefaultConnection");
-    var sqlConnection = new SqlConnection(connectToDbString);
-    sqlConnection.Open();
-    return sqlConnection;
-});
-builder.Services.AddTransient<NorthwindDataAccessFactory, SqlServerDataAccessFactory>();
-builder.Services.AddTransient<IProductManagementService, ProductManagementDataAccessService>();
-builder.Services.AddTransient<IProductCategoryManagementService, ProductCategoriesManagementDataAccessService>();
-builder.Services.AddTransient<IProductCategoryPicturesManagementService, ProductCategoryPicturesManagementDataAccessService>();
-builder.Services.AddTransient<IEmployeeManagementService, EmployeeManagementDataAccessService>();
+    opt.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection")));
+//builder.Services.AddScoped(service =>
+//{
+//    var connectToDbString = builder.Configuration.GetConnectionString("DefaultConnection");
+//    var sqlConnection = new SqlConnection(connectToDbString);
+//    sqlConnection.Open();
+//    return sqlConnection;
+//});
+//builder.Services.AddTransient<NorthwindDataAccessFactory, SqlServerDataAccessFactory>();
+//builder.Services.AddTransient<IProductManagementService, ProductManagementDataAccessService>();
+//builder.Services.AddTransient<IProductCategoryManagementService, ProductCategoriesManagementDataAccessService>();
+//builder.Services.AddTransient<IProductCategoryPicturesManagementService, ProductCategoryPicturesManagementDataAccessService>();
+//builder.Services.AddTransient<IEmployeeManagementService, EmployeeManagementDataAccessService>();
 
-//builder.Services.AddTransient<IProductManagementService, ProductManagementService>();
-//builder.Services.AddTransient<IProductCategoryManagementService, ProductCategoryManagementService>();
-//builder.Services.AddTransient<IProductCategoryPicturesService, ProductCategoryPicturesManagementService>();
-//builder.Services.AddTransient<IEmployeeManagementService, EmployeeManagementService>();
+builder.Services.AddTransient<IProductManagementService, ProductManagementService>();
+builder.Services.AddTransient<IProductCategoryManagementService, ProductCategoryManagementService>();
+builder.Services.AddTransient<IProductCategoryPicturesManagementService, ProductCategoryPicturesManagementService>();
+builder.Services.AddTransient<IEmployeeManagementService, EmployeeManagementService>();
 
 builder.Services.AddEndpointsApiExplorer();
 

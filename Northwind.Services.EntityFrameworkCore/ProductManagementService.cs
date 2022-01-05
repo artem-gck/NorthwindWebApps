@@ -1,4 +1,6 @@
-﻿using Northwind.Services.Models;
+﻿using Northwind.Services.EntityFrameworkCore.Context;
+using Northwind.Services.EntityFrameworkCore.Entities;
+using Northwind.Services.Models;
 
 namespace Northwind.Services.EntityFrameworkCore
 {
@@ -13,11 +15,11 @@ namespace Northwind.Services.EntityFrameworkCore
             => _context = context;
 
         /// <inheritdoc/>
-        public async Task<int> CreateProductAsync(Product product)
+        public async Task<int> CreateProductAsync(Models.Product product)
         {
             _ = product is null ? throw new ArgumentNullException($"{nameof(product)} is null") : product;
 
-            await _context.Products.AddAsync(product);
+            await _context.Products.AddAsync(GetProductEnt(product));
             await _context.SaveChangesAsync();
 
             return product.Id;
@@ -46,25 +48,25 @@ namespace Northwind.Services.EntityFrameworkCore
         }
 
         /// <inheritdoc/>
-        public async Task<IList<Product>> LookupProductsByNameAsync(IList<string> names)
+        public async Task<IList<Models.Product>> LookupProductsByNameAsync(IList<string> names)
         {
             throw new NotImplementedException();
         }
 
         /// <inheritdoc/>
-        public async Task<IList<Product>> ShowProductsAsync(int offset, int limit)
-            => limit != -1 ? _context.Products.Skip(offset).Take(limit).ToList() : _context.Products.Skip(offset).ToList();
+        public async Task<IList<Models.Product>> ShowProductsAsync(int offset, int limit)
+            => limit != -1 ? _context.Products.Skip(offset).Take(limit).Select(product => GetProductMod(product)).ToList() : _context.Products.Skip(offset).Select(product => GetProductMod(product)).ToList();
 
         /// <inheritdoc/>
-        public async Task<IList<Product>> ShowProductsForCategoryAsync(int categoryId)
+        public async Task<IList<Models.Product>> ShowProductsForCategoryAsync(int categoryId)
         {
             throw new NotImplementedException();
         }
 
         /// <inheritdoc/>
-        public bool TryShowProduct(int productId, out Product product)
+        public bool TryShowProduct(int productId, out Models.Product product)
         {
-            product = _context.Products.Find(productId);
+            product = GetProductMod(_context.Products.Find(productId));
 
             if (product is null)
             {
@@ -75,13 +77,13 @@ namespace Northwind.Services.EntityFrameworkCore
         }
 
         /// <inheritdoc/>
-        public async Task<bool> UpdateProductAsync(int productId, Product product)
+        public async Task<bool> UpdateProductAsync(int productId, Models.Product product)
         {
             var prod = _context.Products
-                .Where(prod => prod.Id == productId)
+                .Where(prod => prod.ProductId == productId)
                 .FirstOrDefault();
 
-            prod.Name = product.Name;   
+            prod.ProductName = product.Name;   
             prod.SupplierId = product.SupplierId;   
             prod.UnitsOnOrder = product.UnitsOnOrder;
             prod.UnitsInStock = product.UnitsInStock;
@@ -94,12 +96,42 @@ namespace Northwind.Services.EntityFrameworkCore
 
             await _context.SaveChangesAsync();
 
-            if (_context.Products.Contains(product))
+            if (_context.Products.Contains(GetProductEnt(product)))
             {
                 return true;
             }
 
             return false;
         }
+
+        private static Models.Product GetProductMod(Entities.Product product)
+            => new()
+            {
+                Id = product.ProductId,
+                Name = product.ProductName,
+                SupplierId = product.SupplierId,
+                CategoryId = product.CategoryId,
+                QuantityPerUnit = product.QuantityPerUnit,
+                UnitPrice = product.UnitPrice,
+                UnitsInStock = product.UnitsInStock,
+                UnitsOnOrder = product.UnitsOnOrder,
+                ReorderLevel = product.ReorderLevel,
+                Discontinued = product.Discontinued,
+            };
+
+        private static Entities.Product GetProductEnt(Models.Product product)
+            => new()
+            {
+                ProductId = product.Id,
+                ProductName = product.Name,
+                SupplierId = product.SupplierId,
+                CategoryId = product.CategoryId,
+                QuantityPerUnit = product.QuantityPerUnit,
+                UnitPrice = product.UnitPrice,
+                UnitsInStock = product.UnitsInStock,
+                UnitsOnOrder = product.UnitsOnOrder,
+                ReorderLevel = product.ReorderLevel,
+                Discontinued = product.Discontinued,
+            };
     }
 }

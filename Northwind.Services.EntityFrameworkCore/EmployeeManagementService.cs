@@ -1,4 +1,6 @@
-﻿using Northwind.Services.Models;
+﻿using Northwind.Services.EntityFrameworkCore.Context;
+using Northwind.Services.EntityFrameworkCore.Entities;
+using Northwind.Services.Models;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -20,11 +22,11 @@ namespace Northwind.Services.EntityFrameworkCore
             => _context = context;
 
         /// <inheritdoc/>
-        public async Task<int> CreateEmployeeAsync(Employee employee)
+        public async Task<int> CreateEmployeeAsync(Models.Employee employee)
         {
             _ = employee is null ? throw new ArgumentNullException($"{nameof(employee)} is null") : employee;
 
-            await _context.Employees.AddAsync(employee);
+            await _context.Employees.AddAsync(GetEmloyeeEnt(employee));
             await _context.SaveChangesAsync();
 
             return employee.Id;
@@ -47,13 +49,13 @@ namespace Northwind.Services.EntityFrameworkCore
         }
 
         /// <inheritdoc/>
-        public async Task<IList<Employee>> ShowEmployeesAsync(int offset, int limit)
-            => limit != -1 ? _context.Employees.Skip(offset).Take(limit).ToList() : _context.Employees.Skip(offset).ToList();
+        public async Task<IList<Models.Employee>> ShowEmployeesAsync(int offset, int limit)
+            => limit != -1 ? _context.Employees.Skip(offset).Take(limit).Select(employee => GetEmloyeeMod(employee)).ToList() : _context.Employees.Skip(offset).Select(employee => GetEmloyeeMod(employee)).ToList();
 
         /// <inheritdoc/>
-        public bool TryShowEmployee(int employeeId, out Employee employee)
+        public bool TryShowEmployee(int employeeId, out Models.Employee employee)
         {
-            employee = _context.Employees.Find(employeeId);
+            employee = GetEmloyeeMod(_context.Employees.Find(employeeId));
 
             if (employee is null)
             {
@@ -64,13 +66,13 @@ namespace Northwind.Services.EntityFrameworkCore
         }
 
         /// <inheritdoc/>
-        public async Task<bool> UpdateEmployeeAsync(int employeeId, Employee employee)
+        public async Task<bool> UpdateEmployeeAsync(int employeeId, Models.Employee employee)
         {
             var emp = _context.Employees
-                .Where(cat => cat.Id == employeeId)
+                .Where(cat => cat.EmployeeId == employeeId)
                 .FirstOrDefault();
 
-            emp.Id = employee.Id;
+            emp.EmployeeId = employee.Id;
             emp.LastName = employee.LastName;
             emp.FirstName = employee.FirstName;
             emp.Title = employee.Title;
@@ -91,12 +93,58 @@ namespace Northwind.Services.EntityFrameworkCore
 
             await _context.SaveChangesAsync();
 
-            if (_context.Employees.Contains(employee))
+            if (_context.Employees.Contains(GetEmloyeeEnt(employee)))
             {
                 return true;
             }
 
             return false;
         }
+
+        private static Entities.Employee GetEmloyeeEnt(Models.Employee employee)
+            => new()
+            {
+                EmployeeId = employee.Id,
+                LastName = employee.LastName,
+                FirstName = employee.FirstName,
+                Title = employee.Title,
+                TitleOfCourtesy = employee.TitleOfCourtesy,
+                BirthDate = employee.BirthDate,
+                HireDate = employee.HireDate,
+                Address = employee.Address,
+                City = employee.City,
+                Region = employee.Region,
+                PostalCode = employee.PostalCode,
+                Country = employee.Country,
+                HomePhone = employee.HomePhone,
+                Extension = employee.Extension,
+                Photo = employee.Photo,
+                Notes = employee.Notes,
+                ReportsTo = employee.ReportsTo,
+                PhotoPath = employee.PhotoPath,
+            };
+
+        private static Models.Employee GetEmloyeeMod(Entities.Employee employee)
+            => new()
+            {
+                Id = employee.EmployeeId,
+                LastName = employee.LastName,
+                FirstName = employee.FirstName,
+                Title = employee.Title,
+                TitleOfCourtesy = employee.TitleOfCourtesy,
+                BirthDate = employee.BirthDate,
+                HireDate = employee.HireDate,
+                Address = employee.Address,
+                City = employee.City,
+                Region = employee.Region,
+                PostalCode = employee.PostalCode,
+                Country = employee.Country,
+                HomePhone = employee.HomePhone,
+                Extension = employee.Extension,
+                Photo = employee.Photo,
+                Notes = employee.Notes,
+                ReportsTo = employee.ReportsTo,
+                PhotoPath = employee.PhotoPath,
+            };
     }
 }
