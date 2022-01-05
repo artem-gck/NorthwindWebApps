@@ -12,5 +12,7 @@ namespace Northwind.Services.EntityFrameworkCore
 
         public DbSet<ProductCategory> Categories { get; set; } = null!;
         public DbSet<Product> Products { get; set; } = null!;
+
+        public DbSet<Employee> Employees { get; set; } = null!;
     }
 }

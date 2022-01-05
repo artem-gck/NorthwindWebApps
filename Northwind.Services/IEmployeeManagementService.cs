@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Northwind.Services.Models;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -11,6 +12,14 @@ namespace Northwind.Services
     /// </summary>
     public interface IEmployeeManagementService
     {
-        //int CreateEmployee(ProductCategory productCategory);
+        int CreateEmployee(Employee employee);
+
+        IList<Employee> ShowEmployees(int offset, int limit);
+
+        bool TryShowEmployee(int employeeId, out Employee employee);
+
+        bool DestroyEmployee(int employeeId);
+
+        bool UpdateEmployee(int employeeId, Employee employee);
     }
 }

@@ -8,6 +8,10 @@ namespace Northwind.Services.EntityFrameworkCore
     {
         private static NorthwindContext? _context;
 
+        /// <summary>
+        /// Initializes a new instance of the <see cref="ProductCategoryManagementService"/> class.
+        /// </summary>
+        /// <param name="context">The context.</param>
         public ProductCategoryManagementService(NorthwindContext context)
             => _context = context;
 

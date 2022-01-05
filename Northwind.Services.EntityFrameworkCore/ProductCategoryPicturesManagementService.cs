@@ -5,11 +5,11 @@ using Northwind.Services.Models;
 namespace Northwind.Services.EntityFrameworkCore
 {
     /// <inheritdoc/>
-    public class ProductCategoryPicturesService : IProductCategoryPicturesService
+    public class ProductCategoryPicturesManagementService : IProductCategoryPicturesService
     {
         private static NorthwindContext? _context;
 
-        public ProductCategoryPicturesService(NorthwindContext context)
+        public ProductCategoryPicturesManagementService(NorthwindContext context)
             => _context = context;
 
         /// <inheritdoc/>

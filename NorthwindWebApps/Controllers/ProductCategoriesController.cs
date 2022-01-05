@@ -136,11 +136,9 @@ namespace NorthwindWebApps.Controllers
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         public ActionResult<Stream> GetPicture(int id)
         {
-            byte[] picture;
-
-            if(_pictureService.TryShowPicture(id, out picture))
+            if(_pictureService.TryShowPicture(id, out byte[] picture))
             {
-                return new MemoryStream(picture);
+                return this.File(picture, "image/jpg");
             }
 
             return BadRequest(); 
