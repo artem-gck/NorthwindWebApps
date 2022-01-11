@@ -7,6 +7,9 @@ using Northwind.Services.DataAccess;
 using Northwind.DataAccess.SqlServer;
 using Northwind.DataAccess.Employees;
 using Northwind.Services.EntityFrameworkCore.Context;
+using Northwind.Services.Blogging;
+using Northwind.Services.EntityFrameworkCore.Blogging;
+using Northwind.Services.EntityFrameworkCore.Blogging.Context;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -17,6 +20,8 @@ builder.Services.AddControllers();
 //    opt.UseInMemoryDatabase("NorthwindList"));
 builder.Services.AddDbContext<NorthwindContext>(opt =>
     opt.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection")));
+builder.Services.AddTransient<string[]>();
+
 //builder.Services.AddScoped(service =>
 //{
 //    var connectToDbString = builder.Configuration.GetConnectionString("DefaultConnection");
@@ -34,6 +39,7 @@ builder.Services.AddTransient<IProductManagementService, ProductManagementServic
 builder.Services.AddTransient<IProductCategoryManagementService, ProductCategoryManagementService>();
 builder.Services.AddTransient<IProductCategoryPicturesManagementService, ProductCategoryPicturesManagementService>();
 builder.Services.AddTransient<IEmployeeManagementService, EmployeeManagementService>();
+builder.Services.AddTransient<IBloggingService, BloggingService>();
 
 builder.Services.AddEndpointsApiExplorer();
 
