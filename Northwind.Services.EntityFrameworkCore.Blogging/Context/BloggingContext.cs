@@ -28,6 +28,14 @@ namespace Northwind.Services.EntityFrameworkCore.Blogging.Context
         public virtual DbSet<BlogArticle> BlogArticles { get; set; } = null!;
 
         /// <summary>
+        /// Gets or sets the blog comments.
+        /// </summary>
+        /// <value>
+        /// The blog comments.
+        /// </value>
+        public virtual DbSet<BlogComment> BlogComments { get; set; } = null!;
+
+        /// <summary>
         /// Gets or sets the blog article products.
         /// </summary>
         /// <value>
@@ -62,6 +70,8 @@ namespace Northwind.Services.EntityFrameworkCore.Blogging.Context
             });
 
             modelBuilder.Entity<BlogArticleProduct>();
+
+            modelBuilder.Entity<BlogComment>();
 
             this.OnModelCreatingPartial(modelBuilder);
         }

@@ -40,6 +40,7 @@ builder.Services.AddTransient<IProductCategoryManagementService, ProductCategory
 builder.Services.AddTransient<IProductCategoryPicturesManagementService, ProductCategoryPicturesManagementService>();
 builder.Services.AddTransient<IEmployeeManagementService, EmployeeManagementService>();
 builder.Services.AddTransient<IBloggingService, BloggingService>();
+builder.Services.AddTransient<ICommentingService, CommentingService>();
 
 builder.Services.AddEndpointsApiExplorer();
 
