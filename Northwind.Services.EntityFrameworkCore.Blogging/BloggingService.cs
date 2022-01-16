@@ -90,9 +90,43 @@ namespace Northwind.Services.EntityFrameworkCore.Blogging
             return false;
         }
 
-        private static BlogArticle? GetArticleMod(Entities.BlogArticle article)
+        /// <inheritdoc/>
+        public async Task<IList<BlogArticleProduct?>> ShowProductsInArticleAsync(int articleId, int offset, int limit)
+            => _context.BlogArticleProducts
+                                    .Where(articleProducts => articleProducts.BlogArticleID == articleId)
+                                    .Skip(offset)
+                                    .Take(limit)
+                                    .Select(articleProducts => GetBlogArticleProductMod(articleProducts))
+                                    .ToList();
+
+        /// <inheritdoc/>
+        public async Task<bool> AddALinkToAProductAsync(int articleId, int productId)
         {
-            return article is null ? null : new ()
+            var blogArticleProduct = new BlogArticleProduct()
+            {
+                BlogArticleID = articleId,
+                ProductID = productId,
+            };
+
+            var a = await _context.BlogArticleProducts.AddAsync(GetBlogArticleProductEnt(blogArticleProduct));
+            await _context.SaveChangesAsync();
+
+            return a is null ? false : true;
+        }
+
+        /// <inheritdoc/>
+        public async Task<bool> DestroyExistedLinkToAProductAsync(int articleId, int productId)
+        {
+            var b = _context.BlogArticleProducts.Where(link => link.BlogArticleID == articleId && link.ProductID == productId).FirstOrDefault();
+
+            var a = _context.BlogArticleProducts.Remove(b);
+            await _context.SaveChangesAsync();
+
+            return a is null ? false : true;
+        }
+
+        private static BlogArticle? GetArticleMod(Entities.BlogArticle article)
+            => article is null ? null : new ()
             {
                 Id = article.BlogArticleID,
                 Title = article.Title,
@@ -100,16 +134,31 @@ namespace Northwind.Services.EntityFrameworkCore.Blogging
                 DatePublished = article.DatePublished,
                 PublisherId = article.PublisherId,
             };
-        }
 
-        private static Entities.BlogArticle GetArticleEnt(BlogArticle article)
-            => new ()
+        private static Entities.BlogArticle? GetArticleEnt(BlogArticle article)
+            => article is null ? null : new ()
             {
                 BlogArticleID = article.Id,
                 Title = article.Title,
                 Text = article.Text,
                 DatePublished = article.DatePublished,
                 PublisherId = article.PublisherId,
+            };
+
+        private static BlogArticleProduct? GetBlogArticleProductMod(Entities.BlogArticleProduct blogArticleProduct)
+            => blogArticleProduct is null ? null : new ()
+            {
+                Id = blogArticleProduct.BlogArticleProductID,
+                BlogArticleID = blogArticleProduct.BlogArticleID,
+                ProductID = blogArticleProduct.ProductID,
+            };
+
+        private static Entities.BlogArticleProduct? GetBlogArticleProductEnt(BlogArticleProduct blogArticleProduct)
+            => blogArticleProduct is null ? null : new ()
+            {
+                BlogArticleProductID = blogArticleProduct.Id,
+                BlogArticleID = blogArticleProduct.BlogArticleID,
+                ProductID = blogArticleProduct.ProductID,
             };
     }
 }

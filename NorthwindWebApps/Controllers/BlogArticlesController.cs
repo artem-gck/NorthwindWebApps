@@ -6,7 +6,7 @@ using Northwind.Services.Models;
 namespace NorthwindWebApps.Controllers
 {
     [ApiController]
-    [Route("api/blogging")]
+    [Route("api/articles")]
     public class BlogArticlesController : Controller
     {
         /// <summary>
@@ -19,14 +19,16 @@ namespace NorthwindWebApps.Controllers
         /// </summary>
         private IEmployeeManagementService _employeeManagementService;
 
+        private IProductManagementService _productManagementService;
+
         /// <summary>
         /// Initializes a new instance of the <see cref="BlogArticlesController"/> class.
         /// </summary>
         /// <param name="service">The service.</param>
-        public BlogArticlesController(IBloggingService service, IEmployeeManagementService employeeManagementService)
-            => (_service, _employeeManagementService) = (service, employeeManagementService);
+        public BlogArticlesController(IBloggingService service, IEmployeeManagementService employeeManagementService, IProductManagementService productManagementService)
+            => (_service, _employeeManagementService, _productManagementService) = (service, employeeManagementService, productManagementService);
 
-        // POST api/blogging
+        // POST api/articles
         [HttpPost]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
@@ -50,7 +52,7 @@ namespace NorthwindWebApps.Controllers
             return CreatedAtAction(nameof(CreateAsync), new { id = employeeId }, article);
         }
 
-        // GET api/blogging
+        // GET api/articles
         [HttpGet]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
@@ -86,7 +88,7 @@ namespace NorthwindWebApps.Controllers
             return ans;
         }
 
-        // GET api/blogging/2
+        // GET api/articles/2
         [HttpGet("{id}")]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
@@ -116,7 +118,7 @@ namespace NorthwindWebApps.Controllers
             return blog;
         }
 
-        // DELETE api/blogging/2
+        // DELETE api/articles/2
         [HttpDelete("{id}")]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         [ProducesResponseType(StatusCodes.Status204NoContent)]
@@ -134,7 +136,7 @@ namespace NorthwindWebApps.Controllers
             return NoContent();
         }
 
-        // PUT api/blogging/2
+        // PUT api/articles/2
         [HttpPut("{id}")]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         [ProducesResponseType(StatusCodes.Status204NoContent)]
@@ -151,6 +153,76 @@ namespace NorthwindWebApps.Controllers
             blog.Title = article.Title;
 
             await _service.UpdateArticleAsync(id, blog);
+
+            return NoContent();
+        }
+
+        // GET api/articles/2/products
+        [HttpGet("{articleId}/products")]
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status400BadRequest)]
+        public async Task<ActionResult<BlogArticleProductShow>> GetAllProductsInArticleAsync(int articleId)
+        {
+            var products = await _service.ShowProductsInArticleAsync(articleId, 0, int.MaxValue) as List<BlogArticleProduct>;
+
+            if (products is null)
+            {
+                return BadRequest();
+            }
+
+            BlogArticle article; 
+            _service.TryShowArticle(articleId, out article);
+
+            var productNames = new List<string>();
+
+            foreach (var item in products)
+            {
+                Product product;
+
+                _productManagementService.TryShowProduct(item.ProductID, out product);
+
+                productNames.Add(product.Name);
+            }
+
+            var ans = new BlogArticleProductShow()
+            {
+                BlogArticleName = article.Title,
+                ProductName = productNames.ToArray()
+            };
+
+            return ans;
+        }
+
+        // POST api/articles/2/products/2
+        [HttpPost("{articleId}/products/{productId}")]
+        [ProducesResponseType(StatusCodes.Status201Created)]
+        [ProducesResponseType(StatusCodes.Status400BadRequest)]
+        public async Task<IActionResult> CreateALinkToAProductAsync(int articleId, int productId)
+        {
+            var result = await _service.AddALinkToAProductAsync(articleId, productId);
+
+            if (result is false)
+            {
+                return BadRequest();
+            }
+
+            return CreatedAtAction(nameof(CreateALinkToAProductAsync), articleId, productId);
+        }
+
+        // DELETE api/articles/2/products/2
+        [HttpDelete("{articleId}/products/{productId}")]
+        [ProducesResponseType(StatusCodes.Status400BadRequest)]
+        [ProducesResponseType(StatusCodes.Status204NoContent)]
+        public async Task<IActionResult> DeleteALinkToAProductAsyncAsync(int articleId, int productId)
+        {
+            BlogArticle art;
+
+            if (!_service.TryShowArticle(articleId, out art))
+            {
+                return BadRequest();
+            }
+
+            await _service.DestroyExistedLinkToAProductAsync(articleId, productId);
 
             return NoContent();
         }

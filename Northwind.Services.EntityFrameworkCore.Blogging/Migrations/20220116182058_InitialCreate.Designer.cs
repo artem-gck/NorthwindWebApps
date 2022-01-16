@@ -12,7 +12,7 @@ using Northwind.Services.EntityFrameworkCore.Blogging.Context;
 namespace Northwind.Services.EntityFrameworkCore.Blogging.Migrations
 {
     [DbContext(typeof(BloggingContext))]
-    [Migration("20220107135958_InitialCreate")]
+    [Migration("20220116182058_InitialCreate")]
     partial class InitialCreate
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -34,9 +34,7 @@ namespace Northwind.Services.EntityFrameworkCore.Blogging.Migrations
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("BlogArticleID"), 1L, 1);
 
                     b.Property<DateTime?>("DatePublished")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("datetime2")
-                        .HasDefaultValueSql("((0))");
+                        .HasColumnType("datetime2");
 
                     b.Property<int>("PublisherId")
                         .HasColumnType("int");
@@ -57,6 +55,28 @@ namespace Northwind.Services.EntityFrameworkCore.Blogging.Migrations
                     b.HasIndex(new[] { "Title" }, "Title");
 
                     b.ToTable("BlogArticles");
+                });
+
+            modelBuilder.Entity("Northwind.Services.EntityFrameworkCore.Blogging.Entities.BlogArticleProduct", b =>
+                {
+                    b.Property<int>("BlogArticleProductID")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int")
+                        .HasColumnName("BlogArticleProductID");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("BlogArticleProductID"), 1L, 1);
+
+                    b.Property<int>("BlogArticleID")
+                        .HasColumnType("int");
+
+                    b.Property<int>("ProductID")
+                        .HasColumnType("int");
+
+                    b.HasKey("BlogArticleProductID");
+
+                    b.HasIndex(new[] { "BlogArticleID" }, "BlogArticleID");
+
+                    b.ToTable("BlogArticleProducts");
                 });
 #pragma warning restore 612, 618
         }
