@@ -54,5 +54,26 @@ namespace NorthwindMvcClient.Controllers
                 }
             });
         }
+
+        public async Task<IActionResult> Details(int id)
+        {
+            var json = await this._httpClient.GetStringAsync($"api/Employees/{id}");
+
+            var employee = JsonConvert.DeserializeObject<Employee>(json);
+
+            var employeeView = new EmployeeViewModel()
+            {
+                Id = employee.Id,
+                LastName = employee.LastName,
+                FirstName = employee.FirstName,
+                Title = employee.Title,
+                Image = employee.Photo
+            };
+
+            ViewData["Title"] = "Details";
+
+            return View(employeeView);
+        }
+
     }
 }
