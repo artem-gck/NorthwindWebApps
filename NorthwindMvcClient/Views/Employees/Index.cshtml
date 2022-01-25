@@ -1,0 +1,31 @@
+﻿@model EmployeesListViewModel
+
+<table class="table table-bordered table-striped">
+    <thead>
+        <tr>
+            <th>@Html.DisplayNameFor(model => model.Employees.First().Id)</th>
+            <th>@Html.DisplayNameFor(model => model.Employees.First().FirstName)</th>
+            <th>@Html.DisplayNameFor(model => model.Employees.First().LastName)</th>
+            <th>@Html.DisplayNameFor(model => model.Employees.First().Title)</th>
+            <th>@Html.DisplayNameFor(model => model.Employees.First().Image)</th>
+        </tr>
+    </thead>
+    <tbody>
+          @foreach (var item in Model.Employees)
+          {
+              <tr>
+                  <td>@Html.DisplayFor(itemModel => item.Id)</td>
+                  <td>@Html.DisplayFor(itemModel => item.FirstName)</td>
+                  <td>@Html.DisplayFor(itemModel => item.LastName)</td>
+                  <td>@Html.DisplayFor(itemModel => item.Title)</td>
+                  <td>
+                      <img src="data:image;base64,@Convert.ToBase64String(item.Image[78..])" width="60" height="60"/>
+                  </td>
+              </tr>
+          }
+    </tbody>
+</table>
+<div page-model="@Model.PagingInfo" page-action="Index" page-classes-enabled="true"
+        page-class="btn" page-class-normal="btn-outline-dark"
+        page-class-selected="btn-primary" class="btn-group pull-right m-1">
+</div>

@@ -19,9 +19,22 @@ app.UseStaticFiles();
 app.UseRouting();
 
 app.UseAuthorization();
+app.UseStatusCodePages();
+app.UseHttpsRedirection();
 
-app.MapControllerRoute(
-    name: "default",
-    pattern: "{controller=Home}/{action=Index}/{id?}");
+//app.MapControllerRoute(
+//    name: "default",
+//    pattern: "{controller=Home}/{action=Index}/{id?}");
+
+app.UseEndpoints(endpoints =>
+{
+    endpoints.MapControllerRoute("pagination",
+        "Employees/Page{productPage}",
+        new { Controller = "Employees", action = "Index" });
+
+    endpoints.MapControllerRoute(
+        name: "default",
+        pattern: "{controller=Employees}/{action=Index}/{id?}");
+});
 
 app.Run();
