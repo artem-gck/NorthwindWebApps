@@ -138,7 +138,7 @@ namespace NorthwindWebApps.Controllers
         {
             if(_pictureService.TryShowPicture(id, out byte[] picture))
             {
-                return this.File(picture, "image/jpg");
+                return this.File(picture[78..], "image/jpg");
             }
 
             return BadRequest(); 

@@ -70,9 +70,11 @@ namespace Northwind.Services.EntityFrameworkCore.Blogging
         /// <inheritdoc/>
         public async Task<bool> UpdateArticleAsync(int articleId, BlogArticle article)
         {
-            var art = _context.BlogArticles
-                .Where(prod => prod.BlogArticleID == articleId)
-                .FirstOrDefault();
+            //var art = _context.BlogArticles
+            //    .Where(prod => prod.BlogArticleID == articleId)
+            //    .FirstOrDefault();
+
+            var art = await _context.BlogArticles.FindAsync(articleId);
 
             art.Title = article.Title;
             art.Text = article.Text;

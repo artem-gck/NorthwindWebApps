@@ -28,19 +28,16 @@ namespace Northwind.DataAccess.Employees
                 throw new ArgumentException("Must be greater than zero.", nameof(employeeId));
             }
 
-            const string commandText =
-@"DELETE FROM dbo.Employees WHERE EmployeeID = @employeeID
-SELECT @@ROWCOUNT";
+            await using var sqlCommand = new SqlCommand("DeleteEmployee", this.connection);
+            sqlCommand.CommandType = CommandType.StoredProcedure;
 
-            using (var command = new SqlCommand(commandText, this.connection))
-            {
-                const string empId = "@employeeID";
-                command.Parameters.Add(empId, SqlDbType.Int);
-                command.Parameters[empId].Value = employeeId;
+            const string empId = "@employeeID";
+            sqlCommand.Parameters.Add(empId, SqlDbType.Int);
+            sqlCommand.Parameters[empId].Value = employeeId;
 
-                var result = await command.ExecuteScalarAsync();
-                return ((int)result) > 0;
-            }
+            await this.connection.OpenAsync();
+            var result = await sqlCommand.ExecuteScalarAsync();
+            return ((int)result) > 0;
         }
 
         /// <inheritdoc/>
@@ -51,26 +48,22 @@ SELECT @@ROWCOUNT";
                 throw new ArgumentException("Must be greater than zero.", nameof(employeeId));
             }
 
-            const string commandText =
-@"SELECT c.EmployeeID, c.LastName, c.FirstName, c.Title, c.TitleOfCourtesy, c.BirthDate, c.HireDate, c.Address, c.City, c.Region, c.PostalCode, c.Country, c.HomePhone, c.Extension, c.Photo, c.Notes, c.ReportsTo, c.PhotoPath FROM dbo.Employees as c
-WHERE c.EmployeeID = @employeeID";
+            await using var sqlCommand = new SqlCommand("FindEmployee", this.connection);
+            sqlCommand.CommandType = CommandType.StoredProcedure;
 
-            using (var command = new SqlCommand(commandText, this.connection))
+            const string empId = "@employeeID";
+            sqlCommand.Parameters.Add(empId, SqlDbType.Int);
+            sqlCommand.Parameters[empId].Value = employeeId;
+
+            await this.connection.OpenAsync();
+            var result = await sqlCommand.ExecuteReaderAsync();
+
+            if (!result.HasRows)
             {
-                const string empId = "@employeeID";
-                command.Parameters.Add(empId, SqlDbType.Int);
-                command.Parameters[empId].Value = employeeId;
-
-                using (var reader = await command.ExecuteReaderAsync())
-                {
-                    if (!(await reader.ReadAsync()))
-                    {
-                        throw new EmployeeNotFoundException(employeeId);
-                    }
-
-                    return CreateEmployee(reader);
-                }
+                throw new EmployeeNotFoundException(employeeId);
             }
+
+            return CreateEmployee(result);
         }
 
         /// <inheritdoc/>
@@ -107,14 +100,21 @@ VALUES (@lastName, @firstName, @title, @titleOfCourtesy, @birthDate, @hireDate, 
                 throw new ArgumentException("Must be greater than zero.", nameof(limit));
             }
 
-            const string commandTemplate =
-@"SELECT p.EmployeeID, p.LastName, p.FirstName, p.Title, p.TitleOfCourtesy, p.BirthDate, p.HireDate, p.Address, p.City, p.Region, p.PostalCode, p.Country, p.HomePhone, p.Extension, p.Photo, p.Notes, p.ReportsTo, p.PhotoPath FROM dbo.Employees as p
-ORDER BY p.EmployeeID
-OFFSET {0} ROWS
-FETCH FIRST {1} ROWS ONLY";
+            await using var sqlCommand = new SqlCommand("SelectEmployee", this.connection);
+            sqlCommand.CommandType = CommandType.StoredProcedure;
 
-            string commandText = string.Format(CultureInfo.CurrentCulture, commandTemplate, offset, limit);
-            return await this.ExecuteReaderAsync(commandText);
+            const string offsetSql = "@offset";
+            const string limitSql = "@limit";
+
+            sqlCommand.Parameters.Add(offsetSql, SqlDbType.Int);
+            sqlCommand.Parameters.Add(limitSql, SqlDbType.Int);
+            sqlCommand.Parameters[offsetSql].Value = offset;
+            sqlCommand.Parameters[limitSql].Value = limit;
+
+            await this.connection.OpenAsync();
+            var result = await sqlCommand.ExecuteReaderAsync();
+
+            return await this.ExecuteReaderAsync(result);
         }
 
         /// <inheritdoc/>
@@ -136,7 +136,12 @@ WHERE p.LastName in ('{0}')
 ORDER BY p.EmployeeID";
 
             string commandText = string.Format(CultureInfo.CurrentCulture, commandTemplate, string.Join("', '", employeeNames));
-            return await this.ExecuteReaderAsync(commandText);
+            await using var sqlCommand = new SqlCommand(commandText, this.connection);
+
+            await this.connection.OpenAsync();
+            var result = await sqlCommand.ExecuteReaderAsync();
+
+            return await this.ExecuteReaderAsync(result);
         }
 
         /// <inheritdoc/>
@@ -296,21 +301,15 @@ SELECT @@ROWCOUNT";
             };
         }
 
-        private async Task<IList<EmployeeTransferObject>> ExecuteReaderAsync(string commandText)
+        private async Task<IList<EmployeeTransferObject>> ExecuteReaderAsync(SqlDataReader reader)
         {
             var products = new List<EmployeeTransferObject>();
 
-#pragma warning disable CA2100 // Review SQL queries for security vulnerabilities
-            using (var command = new SqlCommand(commandText, this.connection))
-#pragma warning restore CA2100 // Review SQL queries for security vulnerabilities
-            using (var reader = await command.ExecuteReaderAsync())
+            while (reader.Read())
             {
-                while (reader.Read())
-                {
-                    products.Add(CreateEmployee(reader));
-                }
+                products.Add(CreateEmployee(reader));
             }
-
+            
             return products;
         }
     }
