@@ -1,0 +1,40 @@
+﻿@model BlogArticlesListViewModel
+
+<table class="table table-bordered table-striped">
+    <thead>
+        <tr>
+            <th>@Html.DisplayNameFor(model => model.BlogArticles.First().Title)</th>
+            <th>@Html.DisplayNameFor(model => model.BlogArticles.First().DatePublished)</th>
+            <th>@Html.DisplayNameFor(model => model.BlogArticles.First().PublisherId)</th>
+        </tr>
+    </thead>
+    <tbody>
+          @foreach (var item in Model.BlogArticles)
+          {
+              <tr>
+                  <td>@Html.DisplayFor(itemModel => item.Title)</td>
+                  <td>@Html.DisplayFor(itemModel => item.DatePublished)</td>
+                  <td>@Html.DisplayFor(itemModel => item.PublisherId)</td>
+                  <td>
+                      <a class="btn btn-info btn-sm"
+                               href=@string.Concat("/articles/Details/", item.Id.ToString())>
+                          Details
+                      </a>
+                      <a class="btn btn-warning btn-sm"
+                               href="@string.Concat("/articles/Update/", item.Id.ToString())">
+                          Edit
+                      </a>
+                      <a class="btn btn-danger btn-sm"
+                               href="@string.Concat("/articles/Delete/", item.Id.ToString())">
+                          Delete
+                      </a>
+                  </td>
+              </tr>
+          }
+    </tbody>
+</table>
+<a class="btn btn-warning btn-sm" href="/Employees/Create">Create new employee</a>
+<div page-model="@Model.PagingInfo" page-action="Index" page-classes-enabled="true"
+        page-class="btn" page-class-normal="btn-outline-dark"
+        page-class-selected="btn-primary" class="btn-group pull-right m-1">
+</div>
