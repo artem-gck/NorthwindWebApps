@@ -69,13 +69,17 @@ namespace NorthwindMvcClient.Controllers
             var articleJson = await this._httpClient.GetStringAsync($"articles/{id}");
             var article = JsonConvert.DeserializeObject<BlogReadId>(articleJson);
 
+            var productsArticleJson = await this._httpClient.GetStringAsync($"articles/{id}/products");
+            var productsArticle = JsonConvert.DeserializeObject<BlogArticleProductShow>(productsArticleJson);
+
             var articleView = new BlogArticleViewModel()
             {
                 Id = article.Id,
                 Title = article.Title,
                 Text = article.Text,
                 DatePublished = article.DatePublished,
-                PublisherId = article.PublisherId
+                PublisherId = article.PublisherId,
+                Products = productsArticle.ProductName,
             };
 
             ViewData["employees"] = article.PublisherName;

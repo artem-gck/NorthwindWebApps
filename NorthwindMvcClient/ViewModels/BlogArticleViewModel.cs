@@ -46,7 +46,7 @@ namespace NorthwindMvcClient.ViewModels
         [DisplayName("Publisher")]
         public int PublisherId { get; set; }
 
-        public IEnumerable<ProductViewModel> Products { get; set; }
+        public IEnumerable<string> Products { get; set; }
 
         public IEnumerable<BlogCommentViewModel> Comments { get; set; }
     }
