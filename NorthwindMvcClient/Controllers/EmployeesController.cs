@@ -112,10 +112,10 @@ namespace NorthwindMvcClient.Controllers
         [HttpPost]
         public async Task<IActionResult> Update(EmployeeViewModel employee)
         {
-            var imageData = new byte[(int)employee.Photo.Length + 77];
+            var imageData = new byte[(int)employee.Photo.Length];
 
             using var binaryReader = new BinaryReader(employee.Photo.OpenReadStream());
-            imageData.ToList().InsertRange(77, binaryReader.ReadBytes((int)employee.Photo.Length));
+            imageData.ToList().InsertRange(0, binaryReader.ReadBytes((int)employee.Photo.Length));
          
             var employeeServer = new Employee()
             {

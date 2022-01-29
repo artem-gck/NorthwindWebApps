@@ -28,13 +28,17 @@ app.UseStatusCodePages();
 
 app.UseEndpoints(endpoints =>
 {
-    endpoints.MapControllerRoute("pagination",
+    endpoints.MapControllerRoute("paginationOfEmployee",
         "Employees/Page{productPage}",
         new { Controller = "Employees", action = "Index" });
 
+    endpoints.MapControllerRoute("paginationOfBlogArticles",
+        "BlogArticles/Page{productPage}",
+        new { Controller = "BlogArticles", action = "Index" });
+
     endpoints.MapControllerRoute(
         name: "default",
-        pattern: "{controller=Employees}/{action=Index}/{id?}");
+        pattern: "{controller=BlogArticles}/{action=Index}/{id?}");
 });
 
 app.Run();

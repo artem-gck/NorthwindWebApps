@@ -14,18 +14,18 @@
               <tr>
                   <td>@Html.DisplayFor(itemModel => item.Title)</td>
                   <td>@Html.DisplayFor(itemModel => item.DatePublished)</td>
-                  <td>@Html.DisplayFor(itemModel => item.PublisherId)</td>
+                  <td>@Html.DisplayFor(itemModel => (ViewData["employees"] as List<EmployeeViewModel>).Find(emp => emp.Id == item.PublisherId).LastName)</td>
                   <td>
                       <a class="btn btn-info btn-sm"
-                               href=@string.Concat("/articles/Details/", item.Id.ToString())>
+                               href=@string.Concat("/BlogArticles/Details/", item.Id.ToString())>
                           Details
                       </a>
                       <a class="btn btn-warning btn-sm"
-                               href="@string.Concat("/articles/Update/", item.Id.ToString())">
+                               href="@string.Concat("/BlogArticles/Update/", item.Id.ToString())">
                           Edit
                       </a>
                       <a class="btn btn-danger btn-sm"
-                               href="@string.Concat("/articles/Delete/", item.Id.ToString())">
+                               href="@string.Concat("/BlogArticles/Delete/", item.Id.ToString())">
                           Delete
                       </a>
                   </td>
@@ -33,7 +33,7 @@
           }
     </tbody>
 </table>
-<a class="btn btn-warning btn-sm" href="/Employees/Create">Create new employee</a>
+<a class="btn btn-warning btn-sm" href="/BlogArticles/Create">Create new article</a>
 <div page-model="@Model.PagingInfo" page-action="Index" page-classes-enabled="true"
         page-class="btn" page-class-normal="btn-outline-dark"
         page-class-selected="btn-primary" class="btn-group pull-right m-1">

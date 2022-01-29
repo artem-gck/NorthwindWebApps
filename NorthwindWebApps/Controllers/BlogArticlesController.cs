@@ -151,6 +151,8 @@ namespace NorthwindWebApps.Controllers
 
             blog.Text = article.Text;
             blog.Title = article.Title;
+            blog.PublisherId = article.PublisherId;
+            blog.DatePublished = DateTime.Now;
 
             await _service.UpdateArticleAsync(id, blog);
 
