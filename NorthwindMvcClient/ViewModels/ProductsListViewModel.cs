@@ -1,9 +1,8 @@
 ﻿namespace NorthwindMvcClient.ViewModels
 {
-    public class EmployeesListViewModel
+    public class ProductsListViewModel
     {
-        public IEnumerable<EmployeeViewModel> Employees { get; set; }
+        public IEnumerable<ProductViewModel> Products { get; set; }
         public PagingInfo PagingInfo { get; set; }
-
     }
 }

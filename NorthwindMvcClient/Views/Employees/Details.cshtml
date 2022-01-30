@@ -33,11 +33,10 @@
         </dt>
         <dd class = "col-sm-10">
             <img src="data:image;base64,@Convert.ToBase64String(new BinaryReader(Model.Photo.OpenReadStream()).ReadBytes((int)Model.Photo.Length))" width="60" height="60"/>
-            @*@Html.DisplayFor(model => model.Image)*@
         </dd>
     </dl>
 </div>
 <div>
-    @Html.ActionLink("Edit", "Edit", new { /* id = Model.PrimaryKey */ }) |
+    @Html.ActionLink("Edit", "Update", new { id = Model.Id }) |
     <a asp-action="Index">Back to List</a>
 </div>

@@ -1,5 +1,9 @@
 ﻿@model EmployeesListViewModel
 
+@{
+    ViewData["Title"] = "Employees";
+}
+
 <table class="table table-bordered table-striped">
     <thead>
         <tr>
@@ -20,24 +24,15 @@
                       <img src="data:image;base64,@Convert.ToBase64String(new BinaryReader(item.Photo.OpenReadStream()).ReadBytes((int)item.Photo.Length))" width="60" height="60"/>
                   </td>
                   <td>
-                      <a class="btn btn-info btn-sm"
-                               href=@string.Concat("/Employees/Details/", item.Id.ToString())>
-                          Details
-                      </a>
-                      <a class="btn btn-warning btn-sm"
-                               href="@string.Concat("/Employees/Update/", item.Id.ToString())">
-                          Edit
-                      </a>
-                      <a class="btn btn-danger btn-sm"
-                               href="@string.Concat("/Employees/Delete/", item.Id.ToString())">
-                          Delete
-                      </a>
+                      @Html.ActionLink("Details", "Details", new { id = item.Id }, htmlAttributes: new { @class= "btn btn-info btn-sm"})
+                      @Html.ActionLink("Edit", "Update", new { id = item.Id }, htmlAttributes: new { @class= "btn btn-warning btn-sm"})
+                      @Html.ActionLink("Delete", "Delete", new { id = item.Id }, htmlAttributes: new { @class= "btn btn-danger btn-sm"})
                   </td>
               </tr>
           }
     </tbody>
 </table>
-<a class="btn btn-warning btn-sm" href="/Employees/Create">Create new employee</a>
+@Html.ActionLink("Create new employee", "Create", new {}, htmlAttributes: new { @class= "btn btn-warning btn-sm"})
 <div page-model="@Model.PagingInfo" page-action="Index" page-classes-enabled="true"
         page-class="btn" page-class-normal="btn-outline-dark"
         page-class-selected="btn-primary" class="btn-group pull-right m-1">

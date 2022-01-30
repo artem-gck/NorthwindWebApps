@@ -1,24 +1,26 @@
-﻿@model BlogArticlesListViewModel
+﻿@model ProductsListViewModel
 
 @{
-    ViewData["Title"] = "Articles";
+    ViewData["Title"] = "Products";
 }
 
 <table class="table table-bordered table-striped">
     <thead>
         <tr>
-            <th>@Html.DisplayNameFor(model => model.BlogArticles.First().Title)</th>
-            <th>@Html.DisplayNameFor(model => model.BlogArticles.First().DatePublished)</th>
-            <th>@Html.DisplayNameFor(model => model.BlogArticles.First().PublisherId)</th>
+            <th>@Html.DisplayNameFor(model => model.Products.First().Name)</th>
+            <th>@Html.DisplayNameFor(model => model.Products.First().CategoryName)</th>
+            <th>@Html.DisplayNameFor(model => model.Products.First().UnitsInStock)</th>
+            <th>@Html.DisplayNameFor(model => model.Products.First().UnitPrice)</th>
         </tr>
     </thead>
     <tbody>
-          @foreach (var item in Model.BlogArticles)
+          @foreach (var item in Model.Products)
           {
               <tr>
-                  <td>@Html.DisplayFor(itemModel => item.Title)</td>
-                  <td>@Html.DisplayFor(itemModel => item.DatePublished)</td>
-                  <td>@Html.DisplayFor(itemModel => (ViewData["employees"] as List<EmployeeViewModel>).Find(emp => emp.Id == item.PublisherId).LastName)</td>
+                  <td>@Html.DisplayFor(itemModel => item.Name)</td>
+                  <td>@Html.DisplayFor(itemModel => item.CategoryName)</td>
+                  <td>@Html.DisplayFor(itemModel => item.UnitsInStock)</td>
+                  <td>@Html.DisplayFor(itemModel => item.UnitPrice)</td>
                   <td>
                       @Html.ActionLink("Details", "Details", new { id = item.Id }, htmlAttributes: new { @class= "btn btn-info btn-sm"})
                       @Html.ActionLink("Edit", "Update", new { id = item.Id }, htmlAttributes: new { @class= "btn btn-warning btn-sm"})
@@ -28,7 +30,7 @@
           }
     </tbody>
 </table>
-@Html.ActionLink("Create new article", "Create", new {}, htmlAttributes: new { @class= "btn btn-warning btn-sm"})
+@Html.ActionLink("Create new product", "Create", new {}, htmlAttributes: new { @class= "btn btn-warning btn-sm"})
 <div page-model="@Model.PagingInfo" page-action="Index" page-classes-enabled="true"
         page-class="btn" page-class-normal="btn-outline-dark"
         page-class-selected="btn-primary" class="btn-group pull-right m-1">

@@ -31,9 +31,10 @@
                 <div class="form-control">
                     @foreach(var product in Model.Products)
                     {
-                        <div>@Html.DisplayFor(model => product.Name) <a href=@string.Concat("/BlogArticles/DeleteProductToArticle/", Model.Id, "/", product.Id)>Delete</a></div>
+                        <div>@Html.DisplayFor(model => product.Name) @Html.ActionLink("Delete", "DeleteProductToArticle", new { id = Model.Id, id_del = product.Id})</div>
                     }
-                    <a class="btn btn-warning btn-sm col-sm-2" href=@string.Concat("/BlogArticles/AddProductToArticle/", Model.Id.ToString())>Add</a>
+
+                    @Html.ActionLink("Add", "AddProductToArticle", new { id = Model.Id}, htmlAttributes: new { @class= "btn btn-warning btn-sm col-sm-2"})
                 </div>
             </div>
             <div class="form-group">
@@ -41,9 +42,9 @@
                 <div class="form-control">
                     @foreach(var comment in Model.Comments)
                     {
-                        <div>@Html.DisplayFor(model => comment.Comment) <a href=@string.Concat("/BlogArticles/DeleteCommentToArticle/", Model.Id, "/", comment.Id)>Delete</a></div>
+                        <div>@Html.DisplayFor(model => comment.Comment) @Html.ActionLink("Delete", "DeleteCommentToArticle", new { id = Model.Id, id_del = comment.Id})</div>
                     }
-                    <a class="btn btn-warning btn-sm col-sm-2" href=@string.Concat("/BlogArticles/AddCommentToArticle/", Model.Id.ToString())>Add</a>
+                    @Html.ActionLink("Add", "AddCommentToArticle", new { id = Model.Id}, htmlAttributes: new { @class= "btn btn-warning btn-sm col-sm-2"})
                 </div>
             </div>
             <hr />

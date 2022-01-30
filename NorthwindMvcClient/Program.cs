@@ -28,6 +28,10 @@ app.UseEndpoints(endpoints =>
         "BlogArticles/Page{productPage}",
         new { Controller = "BlogArticles", action = "Index" });
 
+    endpoints.MapControllerRoute("paginationOfProducts",
+        "Products/Page{productPage}",
+        new { Controller = "Products", action = "Index" });
+
     endpoints.MapControllerRoute(
         name: "default",
         pattern: "{controller=BlogArticles}/{action=Index}/{id?}/{id_del?}");

@@ -10,7 +10,7 @@ namespace NorthwindMvcClient.Controllers
 {
     public class BlogArticlesController : Controller
     {
-        public const int PageSize = 5;
+        public readonly int PageSize;
 
         private HttpClient _httpClient;
 
@@ -20,6 +20,8 @@ namespace NorthwindMvcClient.Controllers
             {
                 BaseAddress = new Uri($"https://localhost:{configuration["port"]}/api/")
             };
+
+            PageSize = int.Parse(configuration["pageSize"]);
 
             this._httpClient.DefaultRequestHeaders.Accept.Clear();
             this._httpClient.DefaultRequestHeaders.Accept.Add(new MediaTypeWithQualityHeaderValue("application/json"));
