@@ -72,6 +72,15 @@ namespace NorthwindMvcClient.Controllers
             var productsArticleJson = await this._httpClient.GetStringAsync($"articles/{id}/products");
             var productsArticle = JsonConvert.DeserializeObject<BlogArticleProductShow>(productsArticleJson);
 
+            var commentsArticleJson = await this._httpClient.GetStringAsync($"articles/{id}/comments");
+            var commentsArticle = JsonConvert.DeserializeObject<List<BlogCommentsShow>>(commentsArticleJson);
+
+            var comments = commentsArticle.Select(comment => new BlogCommentViewModel()
+            {
+                Id = comment.Id,
+                Comment = comment.Comment,
+            });
+
             var products = productsArticle.Products.Select(product => new ProductViewModel()
             {
                 Id = product.Id,
@@ -86,6 +95,7 @@ namespace NorthwindMvcClient.Controllers
                 DatePublished = article.DatePublished,
                 PublisherId = article.PublisherId,
                 Products = products,
+                Comments = comments,
             };
 
             ViewData["employees"] = article.PublisherName;
@@ -104,6 +114,15 @@ namespace NorthwindMvcClient.Controllers
             var productsArticleJson = await this._httpClient.GetStringAsync($"articles/{id}/products");
             var productsArticle = JsonConvert.DeserializeObject<BlogArticleProductShow>(productsArticleJson);
 
+            var commentsArticleJson = await this._httpClient.GetStringAsync($"articles/{id}/comments");
+            var commentsArticle = JsonConvert.DeserializeObject<List<BlogCommentsShow>>(commentsArticleJson);
+
+            var comments = commentsArticle.Select(comment => new BlogCommentViewModel()
+            {
+                Id = comment.Id,
+                Comment = comment.Comment,
+            });
+
             var products = productsArticle.Products.Select(product => new ProductViewModel()
             {
                 Id = product.Id,
@@ -119,6 +138,7 @@ namespace NorthwindMvcClient.Controllers
                 Text = article.Text,
                 PublisherId = article.PublisherId,
                 Products = products,
+                Comments = comments,
             };
 
             return View(articleView);
@@ -204,6 +224,15 @@ namespace NorthwindMvcClient.Controllers
             var productsArticleJson = await this._httpClient.GetStringAsync($"articles/{id}/products");
             var productsArticle = JsonConvert.DeserializeObject<BlogArticleProductShow>(productsArticleJson);
 
+            var commentsArticleJson = await this._httpClient.GetStringAsync($"articles/{id}/comments");
+            var commentsArticle = JsonConvert.DeserializeObject<List<BlogCommentsShow>>(commentsArticleJson);
+
+            var comments = commentsArticle.Select(comment => new BlogCommentViewModel()
+            {
+                Id = comment.Id,
+                Comment = comment.Comment,
+            });
+
             var productsInArticle = productsArticle.Products.Select(product => new ProductViewModel()
             {
                 Id = product.Id,
@@ -218,6 +247,7 @@ namespace NorthwindMvcClient.Controllers
                 DatePublished = article.DatePublished,
                 PublisherId = article.PublisherId,
                 Products = productsInArticle,
+                Comments = comments,
             };
 
             ViewBag.products = new SelectList(products, "Id", "Name");
@@ -246,6 +276,15 @@ namespace NorthwindMvcClient.Controllers
             var productsArticleJson = await this._httpClient.GetStringAsync($"articles/{id}/products");
             var productsArticle = JsonConvert.DeserializeObject<BlogArticleProductShow>(productsArticleJson);
 
+            var commentsArticleJson = await this._httpClient.GetStringAsync($"articles/{id}/comments");
+            var commentsArticle = JsonConvert.DeserializeObject<List<BlogCommentsShow>>(commentsArticleJson);
+
+            var comments = commentsArticle.Select(comment => new BlogCommentViewModel()
+            {
+                Id = comment.Id,
+                Comment = comment.Comment,
+            });
+
             var products = productsArticle.Products.Select(product => new ProductViewModel()
             {
                 Id = product.Id,
@@ -261,6 +300,106 @@ namespace NorthwindMvcClient.Controllers
                 Text = article.Text,
                 PublisherId = article.PublisherId,
                 Products = products,
+                Comments = comments,
+            };
+
+            return RedirectToAction("Update", articleView);
+        }
+
+        public async Task<IActionResult> AddCommentToArticle(int id)
+        {
+            var productsJson = await this._httpClient.GetStringAsync("products/");
+            var products = JsonConvert.DeserializeObject<List<Product>>(productsJson);
+
+            var articleJson = await this._httpClient.GetStringAsync($"articles/{id}");
+            var article = JsonConvert.DeserializeObject<BlogReadId>(articleJson);
+
+            var productsArticleJson = await this._httpClient.GetStringAsync($"articles/{id}/products");
+            var productsArticle = JsonConvert.DeserializeObject<BlogArticleProductShow>(productsArticleJson);
+
+            var commentsArticleJson = await this._httpClient.GetStringAsync($"articles/{id}/comments");
+            var commentsArticle = JsonConvert.DeserializeObject<List<BlogCommentsShow>>(commentsArticleJson);
+
+            var comments = commentsArticle.Select(comment => new BlogCommentViewModel()
+            {
+                Id = comment.Id,
+                Comment = comment.Comment,
+            });
+
+            var productsInArticle = productsArticle.Products.Select(product => new ProductViewModel()
+            {
+                Id = product.Id,
+                Name = product.Name,
+            });
+
+            var articleView = new BlogArticleViewModel()
+            {
+                Id = article.Id,
+                Title = article.Title,
+                Text = article.Text,
+                DatePublished = article.DatePublished,
+                PublisherId = article.PublisherId,
+                Products = productsInArticle,
+                Comments = comments,
+            };
+
+            ViewBag.products = new SelectList(products, "Id", "Name");
+
+            return View(articleView);
+        }
+
+        [HttpPost]
+        public async Task<IActionResult> AddCommentToArticle(BlogArticleViewModel article)
+        {
+            var articleServer = new BlogComment()
+            {
+                ArticleId = article.Id,
+                Comment = article.AddingComment,
+            };
+
+            await this._httpClient.PostAsJsonAsync($"articles/{article.Id}/comments", articleServer);
+
+            return RedirectToAction("Update", article);
+        }
+
+        public async Task<IActionResult> DeleteCommentToArticle(int id, int id_del)
+        {
+            await this._httpClient.DeleteAsync($"articles/{id}/comments/{id_del}");
+
+            var articleJson = await this._httpClient.GetStringAsync($"articles/{id}");
+            var article = JsonConvert.DeserializeObject<BlogReadId>(articleJson);
+
+            var employeesJson = await this._httpClient.GetStringAsync("Employees/");
+            var employees = JsonConvert.DeserializeObject<List<Employee>>(employeesJson);
+
+            var productsArticleJson = await this._httpClient.GetStringAsync($"articles/{id}/products");
+            var productsArticle = JsonConvert.DeserializeObject<BlogArticleProductShow>(productsArticleJson);
+
+            var commentsArticleJson = await this._httpClient.GetStringAsync($"articles/{id}/comments");
+            var commentsArticle = JsonConvert.DeserializeObject<List<BlogCommentsShow>>(commentsArticleJson);
+
+            var comments = commentsArticle.Select(comment => new BlogCommentViewModel()
+            {
+                Id = comment.Id,
+                Comment = comment.Comment,
+            });
+
+            var products = productsArticle.Products.Select(product => new ProductViewModel()
+            {
+                Id = product.Id,
+                Name = product.Name,
+            });
+
+            ViewBag.employees = new SelectList(employees, "Id", "LastName");
+
+            var articleView = new BlogArticleViewModel()
+            {
+                Id = article.Id,
+                Title = article.Title,
+                Text = article.Text,
+                PublisherId = article.PublisherId,
+                Products = products,
+                Comments = comments,
             };
 
             return RedirectToAction("Update", articleView);

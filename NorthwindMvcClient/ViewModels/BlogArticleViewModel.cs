@@ -51,5 +51,7 @@ namespace NorthwindMvcClient.ViewModels
         public IEnumerable<BlogCommentViewModel> Comments { get; set; }
 
         public int AddingProductId { get; set; }
+
+        public string AddingComment { get; set; }
     }
 }

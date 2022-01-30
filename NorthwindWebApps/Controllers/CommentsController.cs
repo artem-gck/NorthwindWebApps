@@ -81,7 +81,7 @@ namespace NorthwindWebApps.Controllers
             }
 
             var comments = await _service.ShowCommentsAsync(0, int.MaxValue);
-            var com = comments.Where(comment => comment.ArticleId == article_id).ToList()[id - 1];
+            var com = comments.Where(comment => comment.ArticleId == article_id && comment.Id == id).FirstOrDefault();
 
             await _service.DestroyCommentAsync(com.Id);
 

@@ -6,7 +6,6 @@
 
 <h1>Update</h1>
 
-<h4>BlogArticleViewModel</h4>
 <hr />
 <div class="row">
     <div class="col-md-4">
@@ -35,6 +34,16 @@
                         <div>@Html.DisplayFor(model => product.Name) <a href=@string.Concat("/BlogArticles/DeleteProductToArticle/", Model.Id, "/", product.Id)>Delete</a></div>
                     }
                     <a class="btn btn-warning btn-sm col-sm-2" href=@string.Concat("/BlogArticles/AddProductToArticle/", Model.Id.ToString())>Add</a>
+                </div>
+            </div>
+            <div class="form-group">
+                <label asp-for="Comments" class="control-label"></label>
+                <div class="form-control">
+                    @foreach(var comment in Model.Comments)
+                    {
+                        <div>@Html.DisplayFor(model => comment.Comment) <a href=@string.Concat("/BlogArticles/DeleteCommentToArticle/", Model.Id, "/", comment.Id)>Delete</a></div>
+                    }
+                    <a class="btn btn-warning btn-sm col-sm-2" href=@string.Concat("/BlogArticles/AddCommentToArticle/", Model.Id.ToString())>Add</a>
                 </div>
             </div>
             <hr />
