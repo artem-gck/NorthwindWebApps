@@ -39,6 +39,7 @@ builder.Services.AddTransient<IProductManagementService, ProductManagementServic
 builder.Services.AddTransient<IProductCategoryManagementService, ProductCategoryManagementService>();
 builder.Services.AddTransient<IProductCategoryPicturesManagementService, ProductCategoryPicturesManagementService>();
 builder.Services.AddTransient<IEmployeeManagementService, EmployeeManagementService>();
+builder.Services.AddTransient<ISupplierManagementService, SupplierManagementService>();
 builder.Services.AddTransient<IBloggingService, BloggingService>();
 builder.Services.AddTransient<ICommentingService, CommentingService>();
 

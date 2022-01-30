@@ -1,0 +1,20 @@
+﻿using Northwind.Services.Models;
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
+
+namespace Northwind.Services
+{
+    public interface ISupplierManagementService
+    {
+        /// <summary>
+        /// Shows a list of products using specified offset and limit for pagination.
+        /// </summary>
+        /// <param name="offset">An offset of the first element to return.</param>
+        /// <param name="limit">A limit of elements to return.</param>
+        /// <returns>A <see cref="IList{T}"/> of <see cref="Product"/>.</returns>
+        Task<IList<Supplier>> ShowSupplyersAsync(int offset, int limit);
+    }
+}
