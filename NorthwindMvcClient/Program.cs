@@ -30,7 +30,7 @@ app.UseEndpoints(endpoints =>
 
     endpoints.MapControllerRoute(
         name: "default",
-        pattern: "{controller=BlogArticles}/{action=Index}/{id?}");
+        pattern: "{controller=BlogArticles}/{action=Index}/{id?}/{id_del?}");
 });
 
 app.Run();

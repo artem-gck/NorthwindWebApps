@@ -14,11 +14,11 @@ namespace NorthwindMvcClient.Controllers
 
         private HttpClient _httpClient;
 
-        public EmployeesController()
+        public EmployeesController(IConfiguration configuration)
         {
             _httpClient = new HttpClient()
             {
-                BaseAddress = new Uri("https://localhost:7041/api/Employees/")
+                BaseAddress = new Uri($"https://localhost:{configuration["port"]}/api/Employees/")
             };
 
             this._httpClient.DefaultRequestHeaders.Accept.Clear();

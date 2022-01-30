@@ -1,0 +1,24 @@
+﻿@model BlogArticleViewModel
+
+@{
+    ViewData["Title"] = "Details";
+}
+
+<form asp-action="AddProductToArticle">
+    <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+    <div class="form-group">
+        <label asp-for="Products" class="control-label"></label>
+        @foreach(var product in Model.Products)
+        {
+            <br/>
+            @Html.DisplayFor(model => product.Name) 
+        }
+        <select asp-for="AddingProductId" class="form-control" asp-items="@ViewBag.products"></select>
+        <span asp-validation-for="Products" class="text-danger"></span>
+    </div>
+    <hr />
+    <div class="form-group">
+        <a asp-action="Index">Back to List</a>
+        <input type="submit" value="Add" class="btn btn-primary" />
+    </div>
+</form>

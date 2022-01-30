@@ -27,6 +27,16 @@
                 <select asp-for="PublisherId" class="form-control" asp-items="@ViewBag.employees"></select>
                 <span asp-validation-for="PublisherId" class="text-danger"></span>
             </div>
+            <div class="form-group">
+                <label asp-for="Products" class="control-label"></label>
+                <div class="form-control">
+                    @foreach(var product in Model.Products)
+                    {
+                        <div>@Html.DisplayFor(model => product.Name) <a href=@string.Concat("/BlogArticles/DeleteProductToArticle/", Model.Id, "/", product.Id)>Delete</a></div>
+                    }
+                    <a class="btn btn-warning btn-sm col-sm-2" href=@string.Concat("/BlogArticles/AddProductToArticle/", Model.Id.ToString())>Add</a>
+                </div>
+            </div>
             <hr />
             <div class="form-group">
                 <input type="submit" value="Save" class="btn btn-primary" />

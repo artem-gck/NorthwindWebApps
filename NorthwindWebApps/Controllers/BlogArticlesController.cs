@@ -175,7 +175,7 @@ namespace NorthwindWebApps.Controllers
             BlogArticle article; 
             _service.TryShowArticle(articleId, out article);
 
-            var productNames = new List<string>();
+            var productNames = new List<Product>();
 
             foreach (var item in products)
             {
@@ -183,13 +183,13 @@ namespace NorthwindWebApps.Controllers
 
                 _productManagementService.TryShowProduct(item.ProductID, out product);
 
-                productNames.Add(product.Name);
+                productNames.Add(product);
             }
 
             var ans = new BlogArticleProductShow()
             {
                 BlogArticleName = article.Title,
-                ProductName = productNames.ToArray()
+                Products = productNames.ToArray(),
             };
 
             return ans;

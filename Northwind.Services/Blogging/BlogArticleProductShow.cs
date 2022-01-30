@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Northwind.Services.Models;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -10,6 +11,6 @@ namespace Northwind.Services.Blogging
     {
         public string BlogArticleName { get; set; }
 
-        public string[] ProductName { get; set; }
+        public Product[] Products { get; set; }
     }
 }
