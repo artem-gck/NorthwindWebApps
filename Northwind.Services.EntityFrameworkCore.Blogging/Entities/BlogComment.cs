@@ -23,6 +23,15 @@ namespace Northwind.Services.EntityFrameworkCore.Blogging.Entities
         [Column("Id")]
         public int Id { get; set; }
 
+
+        /// <summary>
+        /// Gets or sets the publisher identifier.
+        /// </summary>
+        /// <value>
+        /// The publisher identifier.
+        /// </value>
+        public int PublisherID { get; set; }
+
         /// <summary>
         /// Gets or sets the article identifier.
         /// </summary>

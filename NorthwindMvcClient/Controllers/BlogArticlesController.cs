@@ -77,9 +77,13 @@ namespace NorthwindMvcClient.Controllers
             var commentsArticleJson = await this._httpClient.GetStringAsync($"articles/{id}/comments");
             var commentsArticle = JsonConvert.DeserializeObject<List<BlogCommentsShow>>(commentsArticleJson);
 
+            var employeesJson = await this._httpClient.GetStringAsync("Employees/");
+            var employees = JsonConvert.DeserializeObject<List<Employee>>(employeesJson);
+
             var comments = commentsArticle.Select(comment => new BlogCommentViewModel()
             {
                 Id = comment.Id,
+                PublisherName = employees.Find(empl => empl.Id == comment.PublisherID).LastName,
                 Comment = comment.Comment,
             });
 
@@ -110,7 +114,7 @@ namespace NorthwindMvcClient.Controllers
             var articleJson = await this._httpClient.GetStringAsync($"articles/{id}");
             var article = JsonConvert.DeserializeObject<BlogReadId>(articleJson);
 
-            var employeesJson = await this._httpClient.GetStringAsync("Employees/");
+            var employeesJson = await this._httpClient.GetStringAsync("employees/");
             var employees = JsonConvert.DeserializeObject<List<Employee>>(employeesJson);
 
             var productsArticleJson = await this._httpClient.GetStringAsync($"articles/{id}/products");
@@ -122,6 +126,7 @@ namespace NorthwindMvcClient.Controllers
             var comments = commentsArticle.Select(comment => new BlogCommentViewModel()
             {
                 Id = comment.Id,
+                PublisherName = employees.Find(empl => empl.Id == comment.PublisherID).LastName,
                 Comment = comment.Comment,
             });
 
@@ -322,6 +327,9 @@ namespace NorthwindMvcClient.Controllers
             var commentsArticleJson = await this._httpClient.GetStringAsync($"articles/{id}/comments");
             var commentsArticle = JsonConvert.DeserializeObject<List<BlogCommentsShow>>(commentsArticleJson);
 
+            var employeesJson = await this._httpClient.GetStringAsync("employees/");
+            var employees = JsonConvert.DeserializeObject<List<Employee>>(employeesJson);
+
             var comments = commentsArticle.Select(comment => new BlogCommentViewModel()
             {
                 Id = comment.Id,
@@ -346,6 +354,7 @@ namespace NorthwindMvcClient.Controllers
             };
 
             ViewBag.products = new SelectList(products, "Id", "Name");
+            ViewBag.employees = new SelectList(employees, "Id", "LastName");
 
             return View(articleView);
         }
@@ -356,6 +365,7 @@ namespace NorthwindMvcClient.Controllers
             var articleServer = new BlogComment()
             {
                 ArticleId = article.Id,
+                PublisherID = article.PublisherId,
                 Comment = article.AddingComment,
             };
 

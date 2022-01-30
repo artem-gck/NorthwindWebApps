@@ -10,6 +10,7 @@ namespace Northwind.Services.Blogging
     {
         public int Id { get; set; }
         public int ArticleId { get; set; }
+        public int PublisherID { get; set; }
         public string? Comment { get; set; }
     }
 }

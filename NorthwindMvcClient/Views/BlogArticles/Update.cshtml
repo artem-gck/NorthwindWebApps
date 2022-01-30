@@ -42,7 +42,12 @@
                 <div class="form-control">
                     @foreach(var comment in Model.Comments)
                     {
-                        <div>@Html.DisplayFor(model => comment.Comment) @Html.ActionLink("Delete", "DeleteCommentToArticle", new { id = Model.Id, id_del = comment.Id})</div>
+                        <div>
+                            @Html.DisplayFor(model => comment.PublisherName)
+                            <span>: </span>
+                            @Html.DisplayFor(model => comment.Comment) 
+                            @Html.ActionLink("Delete", "DeleteCommentToArticle", new { id = Model.Id, id_del = comment.Id})
+                        </div>
                     }
                     @Html.ActionLink("Add", "AddCommentToArticle", new { id = Model.Id}, htmlAttributes: new { @class= "btn btn-warning btn-sm col-sm-2"})
                 </div>

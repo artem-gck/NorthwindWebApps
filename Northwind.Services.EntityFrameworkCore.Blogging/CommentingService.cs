@@ -49,9 +49,7 @@ namespace Northwind.Services.EntityFrameworkCore.Blogging
 
         public async Task<bool> UpdateCommentAsync(int commentId, BlogComment comment)
         {
-            var com = _context.BlogComments
-                .Where(prod => prod.Id == commentId)
-                .FirstOrDefault();
+            var com = await _context.BlogComments.FindAsync(commentId);
 
             com.ArticleId = comment.ArticleId;
             com.Comment = comment.Comment;
@@ -82,6 +80,7 @@ namespace Northwind.Services.EntityFrameworkCore.Blogging
             => comment is null ? null : new ()
             {
                 Id = comment.Id,
+                PublisherID = comment.PublisherID,
                 ArticleId = comment.ArticleId,
                 Comment = comment.Comment,
             };
@@ -90,6 +89,7 @@ namespace Northwind.Services.EntityFrameworkCore.Blogging
             => comment is null ? null : new ()
             {
                 Id = comment.Id,
+                PublisherID = comment.PublisherID,
                 ArticleId = comment.ArticleId,
                 Comment = comment.Comment,
             };

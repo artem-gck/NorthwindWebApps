@@ -53,7 +53,7 @@ namespace NorthwindWebApps.Controllers
             }
 
             var comments = await _service.ShowCommentsAsync(0, int.MaxValue);
-            var ans = comments.Where(comment => comment.ArticleId == article_id).Select(comment => GetComment(comment, article.Title)) .ToList();
+            var ans = comments.Where(comment => comment.ArticleId == article_id).Select(comment => GetComment(comment, article.Title)).ToList();
 
             return ans;
 
@@ -61,6 +61,7 @@ namespace NorthwindWebApps.Controllers
                 => new()
                 {
                     Id = comment.Id,
+                    PublisherID = comment.PublisherID,
                     ArticleId = comment.ArticleId,
                     ArticleName = articleTitle,
                     Comment = comment.Comment,
