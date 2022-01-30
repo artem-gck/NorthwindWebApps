@@ -15,6 +15,8 @@ namespace Northwind.Services
         /// <param name="offset">An offset of the first element to return.</param>
         /// <param name="limit">A limit of elements to return.</param>
         /// <returns>A <see cref="IList{T}"/> of <see cref="Product"/>.</returns>
-        Task<IList<Supplier>> ShowSupplyersAsync(int offset, int limit);
+        Task<IList<Supplier>> ShowSuppliersAsync(int offset, int limit);
+
+        public bool TryShowProduct(int supplierId, out Models.Supplier supplier);
     }
 }

@@ -20,6 +20,9 @@ namespace NorthwindMvcClient.ViewModels
         [DisplayName("Supplier")]
         public int? SupplierId { get; set; }
 
+        [DisplayName("Supplier")]
+        public string SupplierName { get; set; }
+
         /// <summary>
         /// Gets or sets a category identifier.
         /// </summary>
