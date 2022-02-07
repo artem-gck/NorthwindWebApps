@@ -1,0 +1,35 @@
+﻿@model IEnumerable<Northwind.Services.Models.Supplier>
+
+<input id="txtCustomerName" class="form-control" />
+<div id="contaner">
+
+</div>
+
+<script type="text/javascript" src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+<script type="text/javascript">
+    $(function () {
+        GetCustomers();
+        $("#txtCustomerName").keyup(function () {
+            GetCustomers();
+        });
+    });
+    function GetCustomers() {
+        var customerName = $.trim($("#txtCustomerName").val());
+
+        $.ajax({
+            type: "GET",
+            data: {},
+            url:  "/Products/SearchSuppliers?term=" + customerName,
+            contentType: "application/json; charset=utf-8",
+            dataType: "json",
+            success: function (customers) {
+                $("#contaner").find("span").remove();
+                $("#contaner").find("br").remove();
+                $.each(customers, function (i, customer) {
+                    $("#contaner").append("<span>" + customer.contactName + "</span>");
+                    $("#contaner").append("<br/>");
+                });
+            }
+        });
+    }
+</script>

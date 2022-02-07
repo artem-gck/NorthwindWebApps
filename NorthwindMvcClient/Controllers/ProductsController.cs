@@ -220,5 +220,21 @@ namespace NorthwindMvcClient.Controllers
 
             return RedirectToAction("Index");
         }
+
+        public async Task<JsonResult> SearchSuppliers(string? term)
+        {;
+            var suppliersJson = await this._httpClient.GetStringAsync("suppliers");
+            var suppliers = JsonConvert.DeserializeObject<List<Supplier>>(suppliersJson);
+            IEnumerable<Supplier> result;
+
+            if (term is null)
+                result = suppliers.Take(0);
+            else
+                result = suppliers.Where(sup => sup.ContactName.Contains(term, StringComparison.OrdinalIgnoreCase))
+                                  .Take(5)
+                                  .OrderBy(sup => sup.ContactName);
+
+            return Json(result);
+        }
     }
 }
